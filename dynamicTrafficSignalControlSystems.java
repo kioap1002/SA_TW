@@ -16,7 +16,7 @@ class detectCamera {
     private boolean laneDirection;  //false:南北, true:東西 //不是拍照能得到的訊息
     //private boolean emergencyVehicle = false; //好像可以用RS_E取代
     private calculation C = new calculation();
-    private roadSituation RS;
+    protected roadSituation RS;  //private
     detectCamera(boolean LD){
         time = now();
         laneDirection = LD;
@@ -59,7 +59,7 @@ class roadSituation {
     private Date time;
     private boolean laneDirection;
     private int vehicleAmount;
-    private boolean emergencyVehicle;
+    protected boolean emergencyVehicle;  //private
     private double density;
     // private roadSituation_emergency RS_E;
     roadSituation(Date T, boolean LD, int VA, boolean EV, double den) {
@@ -182,21 +182,21 @@ class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 &
     
     private LocalTime time = LocalTime.now();  //控制時間
     private LocalTime timeNow = LocalTime.now();  //控制時間(變動ver)
-    private int secend = (int)System.currentTimeMillis() / 1000
+    private int secend = (int)System.currentTimeMillis() / 1000;
     private LocalDate date = LocalDate.now();  //控制日期
     private LocalDate dateNow = LocalDate.now();  //控制日期(變動ver)
 
     private intersectionsDB iDb = new intersectionsDB();
-    private east_westDetectCamera camera_EW = new detectCamera();
-    private north_southDetectCamera camera_NS = new detectCamera();
-    private trafficLight tL = new trafficLight();  //用來傳我們要更改的Mode進去
+    private east_westDetectCamera camera_EW;
+    private north_southDetectCamera camera_NS;
+    private trafficLight tL;  //用來傳我們要更改的Mode進去
     private roadSituation_emergency road_EV;
 
     private Mode mode_current;
-
-    for(true){
+    
+    while(true){
         dateNow = LocalDate.now();
-        if(dateNow - data == 1){
+        if(dateNow - date == 1){
             //換日，把資料丟進日資料庫   (清空秒資料庫?)//清空
 
         }else {
@@ -207,7 +207,7 @@ class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 &
         if(time + 5 <= timeNow){
             camera_EW.shootIntersections();
             camera_NS.shootIntersections();
-            road_EV = new roadSituation_emergency(camera_EW.emergencyVehicle, camera_NS.emergencyVehicle);
+            road_EV = new roadSituation_emergency(camera_EW.RS.emergencyVehicle, camera_NS.RS.emergencyVehicle);
             iDb.addIntersectionData(camera_EW.RS,camera_NS.RS);
             time = LocalTime.now();
             timeNow = LocalTime.now();
@@ -219,17 +219,17 @@ class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 &
                     //EW緊急
                     tL = tL(mode_current(1));
                     break;
-                case: 2:
+                case 2:
                     //NS緊急
                     tL = tL(mode_current(2));
                     break;
-                case:3;
+                case 3:
                     //兩邊緊急//現在是綠燈的方向優先???
                     tL = tL(mode_current(3));
                     break;
             }
         } else {
-            Last30DaysDensity_EW = iDb.calculateTheLast30DaysDensityAverage(false)
+            Last30DaysDensity_EW = iDb.calculateTheLast30DaysDensityAverage(false);
             if(camera_EW.RS.density > Last30DaysDensity_EW * 1.5) {
                 mode_EW = 2;  //高密度
             } else if (camera_EW.RS.density < Last30DaysDensity_EW * 0.5){
@@ -237,7 +237,7 @@ class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 &
             } else {
                 mode_EW = 1;  //普通密度
             }
-            Last30DaysDensity_NS = iDb.calculateTheLast30DaysDensityAverage(true)
+            Last30DaysDensity_NS = iDb.calculateTheLast30DaysDensityAverage(true);
             if(camera_NS.RS.density > Last30DaysDensity_NS * 1.5) {
                 mode_NS = 2;
             } else if (camera_NS.RS.density < Last30DaysDensity_NS * 0.5){
@@ -273,7 +273,7 @@ class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 &
 
 class trafficLight{
     private double greenLightTime_EW;//east_west_greenLight
-    private double redLightTime_NS;//north_south_greenLight
+    private double redLightTime_NS;//north_south_greenLight  
     private double yellowLightTime;
     private Mode trafficLightMode;// = new Mode();
 
