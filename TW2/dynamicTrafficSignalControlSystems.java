@@ -273,9 +273,13 @@ class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 &
 
 class trafficLight{
     private double greenLightTime_EW;//east_west_greenLight
-    private double redLightTime_NS;//north_south_greenLight  
+    private double redLightTime_NS;  //north_south_greenLight  
     private double yellowLightTime;
-    private Mode trafficLightMode;// = new Mode();
+    private Mode trafficLightMode;   // = new Mode();
+
+    private boolean greenLight; //0: 沒亮, 1: 亮燈
+    private int yellowLight;    //0: 沒亮, 1: 亮燈, 2: 閃燈
+    private int redLight;       //0: 沒亮, 1: 亮燈, 2: 閃燈
 
     trafficLight(Mode mode){
         this.trafficLightMode = mode;  //根據傳入的模板更改為高/低/普通/緊急
