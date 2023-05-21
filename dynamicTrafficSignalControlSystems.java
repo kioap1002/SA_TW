@@ -1,3 +1,490 @@
+import javafx.print.PrintColor;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.time.*;
+// import org.apache.commons.lang3.time;
+
+public class dynamicTrafficSignalControlSystems {
+    public static void main() {
+
+    }
+}
+// 偵測相機 一個紅綠燈一個相機
+class detectCamera {
+    private Date time;// = now();
+    private boolean laneDirection;  //false:南北, true:東西 //不是拍照能得到的訊息
+    //private boolean emergencyVehicle = false; //好像可以用RS_E取代
+    private calculation C = new calculation();
+    protected roadSituation RS;  //private
+    detectCamera(boolean LD){
+        time = now();
+        laneDirection = LD;
+    }
+    // 拍攝路口 將拍攝後的照片交給其他函式(?)處理
+    public Void shootIntersections(){
+        System.out.println("Shooting...");
+        detectIntersections("emergencyVehicle = false;vehicleAmount=30;");//因為拍照和處理照片很麻煩，先寫這樣
+        //return image ??????
+        //updateCondition(laneDirection, emergencyVehicle, vehicleAmount);
+    }
+    // 處理路口照片 並將資料更新???
+    public void detectIntersections(String imageMassage){
+        boolean EV;
+        int VA;
+        System.out.println(imageMassage);//處理照片資訊，因為麻煩先這樣表示
+        //IMlist[1]=[false, 30]; // EV, VA 處理照片資訊完得到的資料，因為麻煩先這樣表示
+        updateCondition(IMlist[0],IMlist[1]);
+        RS = new roadSituation(time, laneDirection, VA, EV, C.calculateVehicleDensity(VA));
+    }
+    // 設定最新資料
+    //public Void updateCondition(boolean EV, int VA){  //intersectionSituation // 緊急車輛經過狀態&道路狀態
+        //emergencyVehicle = EV;
+        //RS = new roadSituation(time, laneDirection, VA, EV, C.calculateVehicleDensity(VA));
+    //}
+}
+// 下面兩個class都是依據相機設定車道方向
+class east_westDetectCamera extends detectCamera{
+    east_westDetectCamera(){
+        super(false);
+    }
+}
+class north_southDetectCamera extends detectCamera{
+    north_southDetectCamera(){
+        super(true);
+    }
+}
+
+//單純用來放置資料的物件
+class roadSituation {
+    private Date time;
+    private boolean laneDirection;
+    private int vehicleAmount;
+    protected boolean emergencyVehicle;  //private
+    protected double density;  //private
+    // private roadSituation_emergency RS_E;
+    roadSituation(Date T, boolean LD, int VA, boolean EV, double den) {
+        time = T;
+        laneDirection = LD;
+        vehicleAmount = VA;
+        emergencyVehicle = EV;
+        density = den;
+    }
+}
+
+
+//單純用來設定和放置 east_westLane 跟 north_southLane 的
+class roadSituation_sum {
+    private boolean east_westLane = false;  //ew有無緊急車輛，false = ew車道上無緊急車輛
+    private boolean north_southLane = false;  //ns有無緊急車輛，false = ns車道上無緊急車輛
+    private double east_westDensity;
+    private double north_southDensity;
+
+    roadSituation_sum(boolean EV_EW,boolean EV_NS, double D_EW, double D_NS) {
+        east_westLane = EV_EW;
+        north_southLane = EV_NS;
+        east_westDensity = D_EW;
+        north_southDensity = D_NS;
+    }
+    //回傳緊急車輛出現狀態(有無緊急車輛, if 有: 車道方向為何)
+    public int haveEmergency(){  //0:no_EV, 1:e_w_EV, 2:n_s_EV, 3:both_EV
+        if(east_westLane && north_southLane){
+            return 3;
+        } else if(north_southLane){
+            return 2;
+        } else if(east_westLane){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+
+    // public int densityMode_EW(double Last30DaysDensity_EW){  //密度模板 0: 低 1:正常 2:高
+    //     if(east_westDensity > Last30DaysDensity_EW * 1.5) {
+    //         return 2;  //高密度
+    //     } else if (camera_EW.RS.density < Last30DaysDensity_EW * 0.5){
+    //         return 0;  //低密度
+    //     } else {
+    //         return 1;  //普通密度
+    //     }
+    // }
+    // public int densityMode_NS(double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
+    //     if(camera_NS.RS.density > Last30DaysDensity_NS * 1.5) {
+    //         return 2;
+    //     } else if (camera_NS.RS.density < Last30DaysDensity_NS * 0.5){
+    //         mode_NS = 0;
+    //     } else {
+    //         mode_NS = 1;
+    //     }
+    // }
+
+    public int densityMode_col(double Last30DaysDensity_EW, double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
+        int EW=0,NS=0;
+        if(east_westDensity > Last30DaysDensity_EW * 1.5) {
+            EW = 2;  //高密度
+        } else if (east_westDensity < Last30DaysDensity_EW * 0.5){
+            EW = 0;  //低密度
+        } else {
+            EW = 1;  //普通密度
+        }
+        if(north_southDensity > Last30DaysDensity_NS * 1.5) {
+            NS = 2;
+        } else if (north_southDensity < Last30DaysDensity_NS * 0.5){
+            NS = 0;
+        } else {
+            NS = 1;
+        }
+        densityMode(EW, NS);
+    }
+    // 單處理密度
+    // 密度模板 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
+    public int densityMode(int EW, int NS){  
+        int mode_D;
+        if (EW == 2 || NS == 2){
+            // densityDifferenceValue_EW = camera_EW.C.getCalculateDensityDifferenceValue(Last30DaysDensity_EW);
+            // densityDifferenceValue_NS = camera_NS.C.getCalculateDensityDifferenceValue(Last30DaysDensity_NS);
+            if (EW == 2 && NS == 2){
+                // 兩邊高密度，增加時間配比
+                mode_D = 0;
+            } else if (EW == 2){
+                // EW高密度，增加綠燈秒數
+                mode_D = 1;
+            } else {
+                // NS高密度，增加紅燈秒數
+                mode_D = 2;
+            }
+        } else if (EW == 1 || NS == 1){
+            /*套用正常模板 */
+            mode_D = 3;
+        } else {
+            /*套用低密度模板 */
+            mode_D = 4;
+        }
+        return mode_D;
+    }
+}
+
+class intersectionsDB {  //一直更新，單位為秒
+    private double density;
+    //private roadSituation roadSituation_now;//???
+    List <roadSituation> intersectionData_EW = new Arraylist<roadSituation>();
+    List <roadSituation> intersectionData_NS = new Arraylist<roadSituation>();
+    List <roadSituation> intersectionData = new Arraylist<roadSituation>();
+    public void addIntersectionData(roadSituation RS_EW,roadSituation RS_NS){
+        intersectionData_EW.add(RS_EW);
+        intersectionData_NS.add(RS_NS);
+    }
+    public double calculateTheLast30DaysDensityAverage(boolean laneDirection){  //density
+        double average_30 = 0.0;
+        if(laneDirection){
+            intersectionData = intersectionData_NS;
+        }else{
+            intersectionData = intersectionData_EW;
+        }
+        List<String> TheLast30Days = intersectionData.stream().skip(Math.max(0, intersectionData.size() - 30)).collect(Collectors.toList());
+        for (roadSituation RS_I : TheLast30Days){
+            average_30 += RS_I.density;
+        }
+        return average_30 / 30.0;
+    }
+}
+
+class intersectionsDB_day {  //testing...
+    private double density;
+    //private roadSituation roadSituation_now;//???
+    List <roadSituation> intersectionData_EW = new Arraylist<roadSituation>();  //要改存日數據?  每日數據ver?
+    List <roadSituation> intersectionData_NS = new Arraylist<roadSituation>();
+    List <roadSituation> intersectionData = new Arraylist<roadSituation>();
+    public void addIntersectionData(roadSituation RS_EW,roadSituation RS_NS){  
+        //如果日期更新就會存資料
+        //在DB還是可以找到當日詳細數據?
+        //日期          路口名稱    拍攝時間    密度    車子數量    有無緊急(0,1,2,3)    日平均密度
+        //2200/01/01    某路口      00:00:05   2.7     30          1                   
+        //                          00:00:10   2.3     27          1                   
+        //                                        ...
+        //     /n          /n          /n       /n        /n             /n              25.83
+        intersectionData_EW.add(RS_EW);
+        intersectionData_NS.add(RS_NS);
+    }
+
+    public double calculateTheLast30DaysDensityAverage(boolean laneDirection){  //density
+        double average_30 = 0.0;
+        if(laneDirection){
+            intersectionData = intersectionData_NS;
+        }else{
+            intersectionData = intersectionData_EW;
+        }
+        List<String> TheLast30Days = intersectionData.stream().skip(Math.max(0, intersectionData.size() - 30)).collect(Collectors.toList());
+        for (roadSituation RS_I : TheLast30Days){
+            average_30 += RS_I.density;
+        }
+        return average_30 / 30.0;
+    }
+}
+
+class calculation {
+    private double laneLength;  //300m
+    //private int vehicleAmount;
+    private double density;
+    private double densityDiffer;
+    public double calculateVehicleDensity(int vehicleAmount){  //vehicleAmount
+        this.density =  (double)vehicleAmount / laneLength;
+        return density;
+    }
+    public double getCalculateDensityDifferenceValue(double averageDensity){   //averageDensity, currentDensity
+        this.densityDiffer = averageDensity - density;
+        return densityDiffer;
+    }
+}
+
+class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 & 更改模板
+    private double Last30DaysDensity_EW;
+    private double Last30DaysDensity_NS;
+    private double densityDifferenceValue_EW;//高密度mode計算綠燈增加秒數用
+    private double densityDifferenceValue_NS;//高密度mode計算綠燈增加秒數用
+    private int mode_EW; //密度模板 0: 低 1:正常 2:高
+    private int mode_NS; //密度模板 0: 低 1:正常 2:高
+    private int adjustmentResult;
+    private double timer; //持續時間
+
+    // https://www.uuu.com.tw/Public/content/article/18/20180430.htm
+    // private Date time = now();
+    // private Date timeNow = now();
+    // https://blog.csdn.net/qq_37370132/article/details/107905587
+    
+    private LocalTime time = LocalTime.now();  //控制時間
+    private LocalTime timeNow = LocalTime.now();  //控制時間(變動ver)
+    private int secend = (int)System.currentTimeMillis() / 1000;
+    private LocalDate date = LocalDate.now();  //控制日期
+    private LocalDate dateNow = LocalDate.now();  //控制日期(變動ver)
+
+    private intersectionsDB iDb = new intersectionsDB();
+    private east_westDetectCamera camera_EW;
+    private north_southDetectCamera camera_NS;
+    private trafficLight tL;  //用來傳我們要更改的Mode進去
+    private roadSituation_sum road_sum;
+
+    private Mode mode_current;
+    
+    while(true){
+        dateNow = LocalDate.now();
+        if(dateNow - date == 1){
+            //換日，把資料丟進日資料庫   (清空秒資料庫?)//清空
+
+        }else {
+            //持續計算密度&拍照
+        }
+
+        timeNow = LocalTime.now();
+        if(time + 5 <= timeNow){
+            camera_EW.shootIntersections();
+            camera_NS.shootIntersections();
+            road_sum = new roadSituation_sum(camera_EW.RS.emergencyVehicle, camera_NS.RS.emergencyVehicle, camera_EW.RS.density, camera_NS.RS.density);
+            iDb.addIntersectionData(camera_EW.RS,camera_NS.RS);
+            time = LocalTime.now();
+            timeNow = LocalTime.now();
+            Last30DaysDensity_EW = iDb.calculateTheLast30DaysDensityAverage(false);
+            Last30DaysDensity_NS = iDb.calculateTheLast30DaysDensityAverage(true);
+            Mode temp;
+            if(road_sum.haveEmergency() != 0){
+                temp = new Mode(road_sum.haveEmergency(), road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS));
+            }else{
+                temp = new Mode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS));
+            }
+            mode_current = temp.chandeMode();
+        }
+
+    }
+
+    // public Void requestCalculateDensityDifferenceValue(){  //averageDensity, currentDensity
+    //     densityDifferenceValue = C.getCalculateDensityDifferenceValue(iDb.calculateTheLast30DaysDensityAverage());
+    // }
+}
+
+class trafficLight{
+    private double greenLightTime_EW;//east_west_greenLight
+    private double redLightTime_NS;//north_south_greenLight  
+    private double yellowLightTime;
+    private Mode trafficLightMode;// = new Mode();
+
+    trafficLight(Mode mode){
+        this.trafficLightMode = mode;  //根據傳入的模板更改為高/低/普通/緊急
+        changeMode(trafficLightMode.redLightTime, trafficLightMode.greenLightTime, trafficLightMode.flashingLight);
+    }
+
+    trafficLight(double GT, double RT, double YT){//來源不明  預設? 預設ㄅ
+        this.greenLightTime_EW = GT;
+        this.redLightTime_NS = RT;
+        this.yellowLightTime = YT;
+    }
+    // public void getMode(Mode mode){  //先獲取要改變的模板，再呼叫changeMode
+    //     this.trafficLightMode = mode;
+    //     changeMode(trafficLightMode.redLightTime, trafficLightMode.greenLightTime, trafficLightMode.flashingLight);
+    // }
+    public void changeMode(double RLT, double GLT, int flashing){
+        if(flashing == 0){
+            redLightTime_NS = RLT;
+            greenLightTime_EW = GLT;
+        }else if(flashing == 1){
+            //將燈號設置為：東西閃紅燈/南北閃黃燈
+            //return changeResult; ?是所有套用都要回傳控制結果還是只有手動要? //目前是只有手動要
+        }else if(flashing == 2){
+            //將燈號設置為：南北閃紅燈/東西閃黃燈
+        }
+    }
+}
+
+class Mode{
+
+    private double greenLightTime;//預設值==正常模板值
+    private double redLightTime;//預設值==正常模板值
+    private double yellowLightTime = 3.0;//固定3秒
+    private int timer;
+    private int flashingLight;  //0: 雙方皆為正常燈號, 1: 東西閃紅燈/南北閃黃燈, 2:南北閃紅燈/東西閃黃燈
+    // private roadSituation_emergency RS;
+    private int mode_D;
+
+    private int EV = 0;
+    // public abstract changeEmergencyPattern();
+    // public abstract changeDensityPattern();
+    public changeTime();  //densityDifferenceValue
+    // Mode(int FL, double RLT, double GLT){ //參數
+    //     this.flashingLight = FL;
+    //     this.redLightTime = RLT;
+    //     this.greenLightTime = GLT;
+    // }
+    Mode(){ //emergency
+        //tmd java
+    }
+
+    Mode(int EV, int D){ //emergency
+        this.mode_D = D;
+        this.EV = EV;
+    }
+    Mode(int D){ //emergency
+        this.mode_D = D;
+    }
+    //密度模板 0: 低 1:正常 2:高
+    public Mode chandeMode_EV(){
+        Mode mode;
+        if(EV  != 0){
+            if(mode_D == 2 ){
+                mode = new emergencyMode(EV);
+            }
+        }else{
+
+        }
+        return mode;
+    }
+
+    // 密度模板 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
+    public Mode chandeMode(){  //非緊急，高中低密度
+        Mode mode;
+        if(mode_D == 0){
+            mode = new HighDensityMode().setMode(mode_D);
+        }else{
+
+        }
+        return mode;
+    }
+}
+
+class emergencyMode extends Mode{
+    //0:no_EV, 1:e_w_EV, 2:n_s_EV, 3:both_EV
+    private int condition = 0;
+    emergencyMode(int condition){
+        //在救護車過去前維持綠燈
+        //該方向原本就是綠燈就保持原樣，若為紅燈更改為綠燈
+        //兩方向都有緊急的情況，車道為綠燈方優先
+        //可能需要的變數：一方(車道方向, 車道現在燈號) 兩方(EW向現在燈號, NS向現在燈號)
+        //
+
+
+        //建構子的東西要跟super class做對應，如果這裡要用建構子傳condition，還要加上super(n,n1,n2)
+        //改用setCondition的方式做?
+        this.condition = condition;
+        changeEmergencyMode();
+    }
+    public void setConditionOfEmergency(int con){
+        condition = con;
+    }
+    public void changeEmergencyMode(){
+        switch(condition){
+            case 1:  //e_w_EV
+                //如果ew現為綠燈，延長ew綠燈時間/ns紅燈時間，else? 切換燈號, 保留2?3?秒的綠燈緩衝時間then黃燈then綠燈
+                break;
+            case 2:  //n_s_EV
+                //如果ns現為綠燈，延長綠燈時間，else? 切換燈號
+                break;
+            case 3:  //both_EV
+                //do something
+                break;
+            default:
+                //something wrong
+                //system.ot.println("WARNNING: Somthing wrong...Need Repair...");
+                break;
+        }
+    }
+}
+class HighDensityMode extends Mode{
+    //change light time
+    //計算要改(增減)時間的地方會是哪? calculation? 這裡? 是這裡，但我覺得計算起來有點麻煩，所以在這裡丟參數給計算算
+    private int condition = 0;
+    // 密度模板 0: both高 1: EW高 2:NS高
+    // HighDensityMode(int con){
+    //     this.condition = con;
+    // }
+    public Mode setMode(int con){
+        condition = con;
+        switch (condition) {
+            case 1:
+                
+                break;
+            case 
+            default:
+                break;
+        }
+    }
+}
+class BasicDensityMode extends Mode{
+    BasicDensityMode(){
+        super(0, 30 , 30);
+    }
+}
+class LowDensityMode extends Mode{
+    //flashing
+    LowDensityMode(/*boolean rightOfWayDirection // 路權大的方向 0: EW 1: NS //這要從哪裡取得資料??? */){  //路權以幹/支道做判斷?
+        if (LD){
+            super(1);
+        } else {
+            super(2);
+        }
+    }
+}
+
+class trafficLightTime {
+    private double totalTime;
+    private double greenLightTime;
+    private double redLightTime;
+    private double yellowLightTime;
+    private trafficLight trafficL;
+    trafficLightTime(double TT, double GLT){ //只有高密度模板和普通模板會使用，高密度輸入的TT是增加的，正常TT是預設
+        totalTime = TT;
+        greenLightTime = GLT;
+        redLightTime = TT - GLT - yellowLightTime;
+        // 一輪紅綠燈的順序
+        // GT_EW => (YT_EW -> RT_EW)
+        // (YT_NS -> RT_NS) => GT_NS
+    }
+}
+
+/* 查到的資料，法律規定
+ * 
+ * 行車管制號誌之週期長度，以三○秒至二○○秒為原則。
+ * 
+ * 設置黃燈秒數規定
+ * 速限x(公里/小時) 黃燈秒數s
+ * x<=50    | 3s
  * 50<x<=60 | 4s
  * 60<x     | 5s
  * 
