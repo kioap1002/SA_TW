@@ -287,7 +287,9 @@ class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 &
             Last30DaysDensity_NS = iDb.calculateTheLast30DaysDensityAverage(true);
             Mode temp;
             if(road_sum.haveEmergency() != 0){
-                temp = new Mode(road_sum.haveEmergency(), road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS));
+                //road_sum.haveEmergency(), road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS)
+                temp = new emergencyMode();
+                tL(temp.changeMode());
             }else{
                 temp = new Mode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS));
             }
@@ -306,12 +308,14 @@ class trafficLight{
     private double redLightTime_NS;//north_south_greenLight  
     private double yellowLightTime;
     private Mode trafficLightMode;// = new Mode();
-
-    trafficLight(Mode mode){
-        this.trafficLightMode = mode;  //根據傳入的模板更改為高/低/普通/緊急
-        changeMode(trafficLightMode.redLightTime, trafficLightMode.greenLightTime, trafficLightMode.flashingLight);
+    private changedParameter cP;
+    // trafficLight(Mode mode){
+    //     this.trafficLightMode = mode;  //根據傳入的模板更改為高/低/普通/緊急
+    //     changeMode(trafficLightMode.redLightTime, trafficLightMode.greenLightTime, trafficLightMode.flashingLight);
+    // }
+    trafficLight(changedParameter cP){
+        this.cP = cP;//計算/調整完的時間
     }
-
     trafficLight(double GT, double RT, double YT){//來源不明  預設? 預設ㄅ
         this.greenLightTime_EW = GT;
         this.redLightTime_NS = RT;
@@ -334,131 +338,90 @@ class trafficLight{
     }
 }
 
-class Mode{
-
-    private double greenLightTime;//預設值==正常模板值
-    private double redLightTime;//預設值==正常模板值
-    private double yellowLightTime = 3.0;//固定3秒
-    private int timer;
-    private int flashingLight;  //0: 雙方皆為正常燈號, 1: 東西閃紅燈/南北閃黃燈, 2:南北閃紅燈/東西閃黃燈
-    // private roadSituation_emergency RS;
-    private int mode_D;
-
-    private int EV = 0;
-    // public abstract changeEmergencyPattern();
-    // public abstract changeDensityPattern();
-    public changeTime();  //densityDifferenceValue
-    // Mode(int FL, double RLT, double GLT){ //參數
-    //     this.flashingLight = FL;
-    //     this.redLightTime = RLT;
-    //     this.greenLightTime = GLT;
-    // }
-    Mode(){ //emergency
-        //tmd java
-    }
-
-    Mode(int EV, int D){ //emergency
-        this.mode_D = D;
-        this.EV = EV;
-    }
-    Mode(int D){ //emergency
-        this.mode_D = D;
-    }
-    //密度模板 0: 低 1:正常 2:高
-    public Mode chandeMode_EV(){
-        Mode mode;
-        if(EV  != 0){
-            if(mode_D == 2 ){
-                mode = new emergencyMode(EV);
-            }
-        }else{
-
-        }
-        return mode;
-    }
-
-    // 密度模板 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
-    public Mode chandeMode(){  //非緊急，高中低密度
-        Mode mode;
-        if(mode_D == 0){
-            mode = new HighDensityMode().setMode(mode_D);
-        }else{
-
-        }
-        return mode;
-    }
+abstract class Mode{
+    public abstract changedParameter changeMode();
 }
 
 class emergencyMode extends Mode{
-    //0:no_EV, 1:e_w_EV, 2:n_s_EV, 3:both_EV
-    private int condition = 0;
-    emergencyMode(int condition){
-        //在救護車過去前維持綠燈
-        //該方向原本就是綠燈就保持原樣，若為紅燈更改為綠燈
-        //兩方向都有緊急的情況，車道為綠燈方優先
-        //可能需要的變數：一方(車道方向, 車道現在燈號) 兩方(EW向現在燈號, NS向現在燈號)
-        //
-
-
-        //建構子的東西要跟super class做對應，如果這裡要用建構子傳condition，還要加上super(n,n1,n2)
-        //改用setCondition的方式做?
-        this.condition = condition;
-        changeEmergencyMode();
+    private int EV;
+    private int D;
+    emergencyMode(int EV, int D){
+        this.EV = EV;
+        this.D = D;
     }
-    public void setConditionOfEmergency(int con){
-        condition = con;
-    }
-    public void changeEmergencyMode(){
-        switch(condition){
-            case 1:  //e_w_EV
-                //如果ew現為綠燈，延長ew綠燈時間/ns紅燈時間，else? 切換燈號, 保留2?3?秒的綠燈緩衝時間then黃燈then綠燈
+    public changedParameter changeMode(){
+        switch (EV) {
+            case 3: //both EV
+                //全紅    
                 break;
-            case 2:  //n_s_EV
-                //如果ns現為綠燈，延長綠燈時間，else? 切換燈號
+            case 2:
+                //NS EV
+                
                 break;
-            case 3:  //both_EV
-                //do something
+            case 1:
+                //EW EV
                 break;
             default:
                 //something wrong
-                //system.ot.println("WARNNING: Somthing wrong...Need Repair...");
                 break;
         }
+        
+
     }
 }
 class HighDensityMode extends Mode{
-    //change light time
-    //計算要改(增減)時間的地方會是哪? calculation? 這裡? 是這裡，但我覺得計算起來有點麻煩，所以在這裡丟參數給計算算
-    private int condition = 0;
-    // 密度模板 0: both高 1: EW高 2:NS高
-    // HighDensityMode(int con){
-    //     this.condition = con;
-    // }
-    public Mode setMode(int con){
-        condition = con;
-        switch (condition) {
-            case 1:
-                
-                break;
-            case 
-            default:
-                break;
-        }
+    private int D;
+    private double EW_dF;
+    private double NS_dF;
+    HighDensityMode(int D, double EW_dF, double NS_dF){
+        this.D = D;
+        this.EW_dF = EW_dF;
+        this.NS_dF = NS_dF;
+    }
+    public changedParameter changeMode(){
+        
+        
     }
 }
 class BasicDensityMode extends Mode{
-    BasicDensityMode(){
-        super(0, 30 , 30);
+    public changedParameter changeMode(){
+        //拿到該路口的defalt
+        changedParameter cP = new changedParameter();
+        //light time == 0 => defalt
+        cP.setParameter(0, 0, 0, 0);
+        return cP;
     }
 }
 class LowDensityMode extends Mode{
-    //flashing
-    LowDensityMode(/*boolean rightOfWayDirection // 路權大的方向 0: EW 1: NS //這要從哪裡取得資料??? */){  //路權以幹/支道做判斷?
-        if (LD){
-            super(1);
-        } else {
-            super(2);
+    private int EW;
+    private int NS;
+    LowDensityMode(int EW_right, int NS_right){
+        EW = EW_right;
+        NS = NS_right;
+    }
+    public changedParameter changeMode(){
+        changedParameter cP = new changedParameter();
+        //判斷flashing的狀態
+        int fla = 1;
+        if(EW < NS){
+            fla = 2;
         }
+        cP.setParameter(0, 0, 0, fla);
+        return cP;
+    }
+}
+
+class changedParameter{
+    protected double redLightTime;
+    protected double greenLightTime;
+    protected double yellowLightTime;
+    protected int flashing;
+
+    public void setParameter(double rlt, double glt, double ylt, int fla){
+        redLightTime = rlt;
+        greenLightTime = glt;
+        yellowLightTime = ylt;
+        flashing = fla;
     }
 }
 
