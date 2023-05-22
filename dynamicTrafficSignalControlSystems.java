@@ -264,7 +264,7 @@ class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 &
     private trafficLight tL;  //用來傳我們要更改的Mode進去
     private roadSituation_sum road_sum;
 
-    private Mode mode_current;
+    private Mode mode;
     
     while(true){
         dateNow = LocalDate.now();
@@ -285,15 +285,37 @@ class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 &
             timeNow = LocalTime.now();
             Last30DaysDensity_EW = iDb.calculateTheLast30DaysDensityAverage(false);
             Last30DaysDensity_NS = iDb.calculateTheLast30DaysDensityAverage(true);
-            Mode temp;
+            // Mode temp;
+            // if(road_sum.haveEmergency() != 0){
+            //     //road_sum.haveEmergency(), road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS)
+            //     temp = new emergencyMode();
+            //     tL(temp.changeMode());
+            // }else{
+            //     temp = new Mode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS));
+            // }
+            // mode_current = temp.chandeMode();
             if(road_sum.haveEmergency() != 0){
-                //road_sum.haveEmergency(), road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS)
-                temp = new emergencyMode();
-                tL(temp.changeMode());
-            }else{
-                temp = new Mode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS));
+                mode = new emergencyMode(road_sum.haveEmergency(), road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS));
+            }else{  
+                // 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
+                switch (road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS)) {
+                    case 0:
+                    case 1:
+                    case 2:
+                        mode = new HighDensityMode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS), camera_EW.RS.density, camera_NS.RS.density);
+                        break;
+                    case 3:
+                        mode = new BasicDensityMode();
+                        break;
+                    case 4:
+                        mode = new LowDensityMode(/*路權 */);
+                        break;
+                    default:
+                        // error
+                        break;
+                }
             }
-            mode_current = temp.chandeMode();
+            tL = new trafficLight(mode.changedParameter());
         }
 
     }
@@ -315,6 +337,7 @@ class trafficLight{
     // }
     trafficLight(changedParameter cP){
         this.cP = cP;//計算/調整完的時間
+        //chandeMode();
     }
     trafficLight(double GT, double RT, double YT){//來源不明  預設? 預設ㄅ
         this.greenLightTime_EW = GT;
@@ -325,20 +348,28 @@ class trafficLight{
     //     this.trafficLightMode = mode;
     //     changeMode(trafficLightMode.redLightTime, trafficLightMode.greenLightTime, trafficLightMode.flashingLight);
     // }
-    public void changeMode(double RLT, double GLT, int flashing){
-        if(flashing == 0){
-            redLightTime_NS = RLT;
-            greenLightTime_EW = GLT;
-        }else if(flashing == 1){
-            //將燈號設置為：東西閃紅燈/南北閃黃燈
-            //return changeResult; ?是所有套用都要回傳控制結果還是只有手動要? //目前是只有手動要
-        }else if(flashing == 2){
-            //將燈號設置為：南北閃紅燈/東西閃黃燈
-        }
-    }
+    // public void changeMode(double RLT, double GLT, int flashing){
+    //     if(flashing == 0){
+    //         redLightTime_NS = RLT;
+    //         greenLightTime_EW = GLT;
+    //     }else if(flashing == 1){
+    //         //將燈號設置為：東西閃紅燈/南北閃黃燈
+    //         //return changeResult; ?是所有套用都要回傳控制結果還是只有手動要? //目前是只有手動要
+    //     }else if(flashing == 2){
+    //         //將燈號設置為：南北閃紅燈/東西閃黃燈
+    //     }
+    // }
+    // public void changeMode(){
+    //     if(cP.EV!=)
+    //     if(cP.flashing != 0){
+            
+    //     }else{
+
+    //     }
+    // }
 }
 
-abstract class Mode{
+abstract class Mode{ //回傳已經計算完的秒數
     public abstract changedParameter changeMode();
 }
 
@@ -350,23 +381,27 @@ class emergencyMode extends Mode{
         this.D = D;
     }
     public changedParameter changeMode(){
+        changedParameter cP = new changedParameter();
+        
         switch (EV) {
             case 3: //both EV
                 //全紅    
+                cP.setParameter(3, 3, 3, 0);
                 break;
             case 2:
                 //NS EV
-                
+                cP.setParameter(2, 2, 2, 0);
                 break;
             case 1:
                 //EW EV
+                cP.setParameter(1, 1, 1, 0);
                 break;
             default:
                 //something wrong
+                System.ou.println("wrong message");
                 break;
         }
-        
-
+        return cP;
     }
 }
 class HighDensityMode extends Mode{
@@ -423,4 +458,9 @@ class changedParameter{
         yellowLightTime = ylt;
         flashing = fla;
     }
-}*/
+    public int check(){
+        //if(fla == 0 && redLightTime == greenLightTime && greenLightTime == yellowLightTime && yellowLightTime == redLightTime){
+            return redLightTime;
+        //}
+    }
+}

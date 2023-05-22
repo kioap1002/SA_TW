@@ -39,10 +39,15 @@ class trafficLightTime {
     //     // (YT_NS -> RT_NS) => GT_NS
     // }
     public void physicalTrafficSignal(double greenLightTime, double yellowLightTime, double redLightTime, ){
-        boolean greenLight;
-        int yellowLight;
-        int redLight;
-        int nowLight = 0;//0: 紅, 1: 綠, 2: 黃
+        boolean greenLight_EW = 0;
+        int yellowLight_EW = 0;
+        int redLight_EW = 0;
+        int nowLight_EW = 0;//0: 紅, 1: 綠, 2: 黃
+
+        boolean greenLight_NS = 0;
+        int yellowLight_NS = 0;
+        int redLight_NS = 0;
+        int nowLight_NS = 0;//0: 紅, 1: 綠, 2: 黃
 
         Timer greenLightTimer = new Timer();
         Timer yellowLightTimer = new Timer();
@@ -50,15 +55,33 @@ class trafficLightTime {
         Timer totalTimer = new Timer();
         
         totalTimer.schedule(new TimerTask(){
+
             greenLightTimer.schedule(new TimerTask(){
-                nowLight++;
-            }, 0, greenLightTime);
+                greenLight_EW = 1;
+                yellowLight_EW = 0;
+                redLight_EW = 0;
+                
+
+
+                nowLight_EW++;
+            }, greenLightTime);
             yellowLightTimer.schedule(new TimerTask(){
-                nowLight++;
-            }, 0, yellowLightTime);
+                greenLight_EW = 0;
+                yellowLight_EW = 1;
+                redLight_EW = 0;
+                
+                nowLight_EW++;
+            }, yellowLightTime);
             redLightTimer.schedule(new TimerTask(){
-                nowLight=0;
-            }, 0, redLightTime);
+                greenLight_EW = 0;
+                yellowLight_EW = 0;
+                redLight_EW = 1;
+                
+                nowLight_EW=0;
+            }, redLightTime);
+
+            // GT_EW(50)               => (YT_EW(3) -> RT_EW(47))
+            // (YT_NS(3) -> RT_NS(47)) => GT_NS(50)
         }, 0, greenLightTime + yellowLightTime + redLightTime);
     }
     
