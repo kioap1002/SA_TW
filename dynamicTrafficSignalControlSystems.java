@@ -34,7 +34,7 @@ class detectCamera {
         int VA;
         System.out.println(imageMassage);//處理照片資訊，因為麻煩先這樣表示
         //IMlist[1]=[false, 30]; // EV, VA 處理照片資訊完得到的資料，因為麻煩先這樣表示
-        updateCondition(IMlist[0],IMlist[1]);
+        //updateCondition(IMlist[0],IMlist[1]);
         RS = new roadSituation(time, laneDirection, VA, EV, C.calculateVehicleDensity(VA));
     }
     // 設定最新資料
@@ -99,26 +99,27 @@ class roadSituation_sum {
         }
     }
 
-    // public int densityMode_EW(double Last30DaysDensity_EW){  //密度模板 0: 低 1:正常 2:高
-    //     if(east_westDensity > Last30DaysDensity_EW * 1.5) {
-    //         return 2;  //高密度
-    //     } else if (camera_EW.RS.density < Last30DaysDensity_EW * 0.5){
-    //         return 0;  //低密度
-    //     } else {
-    //         return 1;  //普通密度
-    //     }
-    // }
-    // public int densityMode_NS(double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
-    //     if(camera_NS.RS.density > Last30DaysDensity_NS * 1.5) {
-    //         return 2;
-    //     } else if (camera_NS.RS.density < Last30DaysDensity_NS * 0.5){
-    //         mode_NS = 0;
-    //     } else {
-    //         mode_NS = 1;
-    //     }
-    // }
-
-    public int densityMode_col(double Last30DaysDensity_EW, double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
+    /*public int densityMode_EW(double Last30DaysDensity_EW){  //密度模板 0: 低 1:正常 2:高
+     *     if(east_westDensity > Last30DaysDensity_EW * 1.5) {
+     *         return 2;  //高密度
+     *     } else if (camera_EW.RS.density < Last30DaysDensity_EW * 0.5){
+     *         return 0;  //低密度
+     *     } else {
+     *         return 1;  //普通密度
+     *     }
+     * }
+     * public int densityMode_NS(double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
+     *     if(camera_NS.RS.density > Last30DaysDensity_NS * 1.5) {
+     *         return 2;
+     *     } else if (camera_NS.RS.density < Last30DaysDensity_NS * 0.5){
+     *         mode_NS = 0;
+     *     } else {
+     *         mode_NS = 1;
+     *     }
+     * }
+     */
+    
+     public int densityMode_col(double Last30DaysDensity_EW, double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
         int EW=0,NS=0;
         if(east_westDensity > Last30DaysDensity_EW * 1.5) {
             EW = 2;  //高密度
@@ -136,8 +137,7 @@ class roadSituation_sum {
         }
         densityMode(EW, NS);
     }
-    // 單處理密度
-    // 密度模板 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
+    // 單處理密度　密度模板 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
     public int densityMode(int EW, int NS){  
         int mode_D;
         if (EW == 2 || NS == 2){
@@ -423,98 +423,4 @@ class changedParameter{
         yellowLightTime = ylt;
         flashing = fla;
     }
-}
-
-class trafficLightTime {
-    private double totalTime;
-    private double greenLightTime;
-    private double redLightTime;
-    private double yellowLightTime;
-    private trafficLight trafficL;
-    trafficLightTime(double TT, double GLT){ //只有高密度模板和普通模板會使用，高密度輸入的TT是增加的，正常TT是預設
-        totalTime = TT;
-        greenLightTime = GLT;
-        redLightTime = TT - GLT - yellowLightTime;
-        // 一輪紅綠燈的順序
-        // GT_EW => (YT_EW -> RT_EW)
-        // (YT_NS -> RT_NS) => GT_NS
-    }
-}
-
-/* 查到的資料，法律規定
- * 
- * 行車管制號誌之週期長度，以三○秒至二○○秒為原則。
- * 
- * 設置黃燈秒數規定
- * 速限x(公里/小時) 黃燈秒數s
- * x<=50    | 3s
- * 50<x<=60 | 4s
- * 60<x     | 5s
- * 
- * 行車管制號誌在黃色燈號結束後，應有一秒以上之全紅時間。 
- * 直行交通之全紅時間計算式(不確定全紅時間指的是什麼)
- * 只有車子 (W+L)/2V ~ (W+L)/V
- * 有行人時 (P+L)/2V ~ (P+L)/V
- * W:交岔路口近端停止線至遠端路段起點之距離長度(公尺)
- * P:交岔路口近端停止線至遠端行人穿越道之距離長度(公尺)
- * (看不懂W、P的法律文說明，簡單來說應該是路口長度，應該需要分EW、NS)
- * Ｌ：平均車長，得採用六公尺。 
- * Ｖ：平均車速，得採用行車速限。單位：公尺／秒
- * 以(W+L)/V 為原則，最短不得小於(W+L)/2V。
- * 
- * 行車管制號誌轉變為閃光號誌時
- * 幹線道上號誌應由綠色燈號經過黃色燈號時段轉變為閃光黃燈
- * 支線道上號誌應由紅燈轉變為閃光紅燈
- * 由閃光號誌轉變為行車管制號誌時，應有三秒全紅時間，再循序轉換。
- * 
- * 行人專用號誌在綠色「行走行人」燈號結束前，應有閃光運轉，
- * 其閃光時間應適足以使已進入道路之行人能以正常速率走完全程
- * 或到達可供行人避護之交通島；其計算公式如下：
- * t ＝dw／v，其中
- * t ：閃光綠燈時間。
- * dw：路口無供行人避讓之交通島時為橫越路口寬；
- * 路口有供行人避讓之交通島時為路邊緣石至供行人避讓交通島寬度較寬。
- * V ：行走速率，一般使用一公尺／秒，
- * 學童眾多地點使用零點八公尺／秒，
- * 盲人音響號誌處使用零點五公尺／秒。
- * 
- * 行車管制號誌之啟動及斷電重開，其燈號顯示須先全紅三秒後再循序運轉。
- */
-/* 問bing如何根據車子數量計算綠燈秒數的部分
- * greenLightDuration = (totalCars / carsPerSecond) + yellowLightDuration;
- * totalCars為偵測到的車子總數 : vihicleAmount
- * carsPerSecond則是每秒通過的車子數
- * yellowLightDuration則是黃燈的秒數，通常設定為 3 秒
- * Bing的參考資料
- * (1) 紅燈等太久？交控中心隨時調秒數│紅綠燈│TVBS新聞網. https://news.tvbs.com.tw/life/328720.
- * (2) 交通號誌 - 維基百科，自由的百科全書. https://zh.wikipedia.org/zh-tw/%E7%B4%85%E7%B6%A0%E7%87%88.
- * 
- * 要計算每秒通過的車子數，可以使用以下公式：
- * carsPerSecond = totalCars / time;
- * totalCars為偵測到的車子總數
- * time則是偵測到這些車子所花費的時間
- * 例如，如果偵測到了 100 輛車，
- * 並且這些車子通過所花費的時間為 10 秒，
- * 那麼每秒通過的車子數就是 10。
- */
-/* 引用至維基
- * 有些地方在一些情況下可無視號誌燈號而將通行權優先讓給特殊車輛，
- * 通常這些車輛是緊急車輛（例如：消防車、救護車和警車），
- * 大多數的系統
- * 使用小型且可以發送無線電波、紅外線或閃光燈號誌的發射器
- * 使裝設在號誌燈附近的感應器能夠接收得到，
- * 而有些系統則使用聲音偵測的方式，
- * 其中必須使用某種類型的汽笛讓號誌燈上的感應器能接收得到。
- * 一旦號誌燈上的感應器偵測到有特殊車輛經過，
- * 正常的號誌燈週期將被阻斷並將通行權優先讓給特殊車輛：
- * 路口所有方向的號誌燈將轉為紅燈，除了該特殊車輛有通行權之外，
- * 各方向的車都必須停止。
- * 而有的時候會
- * 在一般的交通號誌燈旁增設額外的號誌燈
- * 讓該特殊車輛知道這個「優先通行機制」已被觸發
- * 並告知其他所有車輛有特殊車輛正接近當中，
- * 當這個機制全部結束之後就會恢復成原本正常的號誌燈週期。
- * 在大部分地區，使用這種「優先通行機制」的特殊車輛可不必遵循交通號誌燈。
- * 然而，該特殊車輛必須放慢速度、小心行駛並
- * 開啟警示燈以告知迎面而來的駕駛有特殊緊急車輛經過。
- */
+}*/
