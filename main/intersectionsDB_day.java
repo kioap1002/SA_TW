@@ -3,6 +3,9 @@ import javafx.print.PrintColor;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+
+
 
 public class intersectionsDB_day {
     private double density;

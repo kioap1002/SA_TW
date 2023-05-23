@@ -2,6 +2,7 @@ package main;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 public class intersectionsDB {  //一直更新，單位為秒
     private double density;

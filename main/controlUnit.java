@@ -4,7 +4,7 @@ import javafx.print.PrintColor;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import java.util.Date;
 import java.time.*;
 public class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 & 更改模板
     private double Last30DaysDensity_EW;
@@ -28,6 +28,7 @@ public class controlUnit {  //有手動跟自動的模式，loop控制更新資�
     private LocalDate dateNow = LocalDate.now();  //控制日期(變動ver)
 
     private intersectionsDB iDb = new intersectionsDB();
+    private intersectionsDB_day iDb_d = new intersectionsDB_day();
     private east_westDetectCamera camera_EW;
     private north_southDetectCamera camera_NS;
     private trafficLight tL;  //用來傳我們要更改的Mode進去  //parameter
@@ -53,8 +54,8 @@ public class controlUnit {  //有手動跟自動的模式，loop控制更新資�
             iDb.addIntersectionData(camera_EW.RS,camera_NS.RS);
             time = LocalTime.now();
             timeNow = LocalTime.now();
-            Last30DaysDensity_EW = iDb.calculateTheLast30DaysDensityAverage(false);
-            Last30DaysDensity_NS = iDb.calculateTheLast30DaysDensityAverage(true);
+            Last30DaysDensity_EW = iDb_d.calculateTheLast30DaysDensityAverage(false);
+            Last30DaysDensity_NS = iDb_d.calculateTheLast30DaysDensityAverage(true);
             if(road_sum.haveEmergency() != 0){
                 mode = new emergencyMode(road_sum.haveEmergency());
             }else{  
@@ -81,7 +82,4 @@ public class controlUnit {  //有手動跟自動的模式，loop控制更新資�
 
     }
 
-    // public Void requestCalculateDensityDifferenceValue(){  //averageDensity, currentDensity
-    //     densityDifferenceValue = C.getCalculateDensityDifferenceValue(iDb.calculateTheLast30DaysDensityAverage());
-    // }
 }

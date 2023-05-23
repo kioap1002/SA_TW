@@ -26,7 +26,7 @@ public class roadSituation_sum {
         }
     }
     
-    public void densityMode_col(double Last30DaysDensity_EW, double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
+    public int densityMode_col(double Last30DaysDensity_EW, double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
         int EW=0,NS=0;
         if(east_westDensity > Last30DaysDensity_EW * 1.5) {
             EW = 2;  //高密度
@@ -42,7 +42,7 @@ public class roadSituation_sum {
         } else {
             NS = 1;
         }
-        densityMode(EW, NS);
+        return densityMode(EW, NS);
     }
     // 單處理密度　密度模板 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
     public int densityMode(int EW, int NS){  

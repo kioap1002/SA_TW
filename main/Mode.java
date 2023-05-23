@@ -49,7 +49,7 @@ class HighDensityMode extends Mode{
         this.NS_dF = NS_dF;
     }
     public changedParameter changeMode(){
-        
+        return new changedParameter();//x
         
     }
 }
