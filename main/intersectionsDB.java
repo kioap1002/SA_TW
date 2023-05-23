@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 public class intersectionsDB {  //一直更新，單位為秒
-    private int count = 0;
     List <roadSituation> intersectionData_EW = new Arraylist<roadSituation>();
     List <roadSituation> intersectionData_NS = new Arraylist<roadSituation>();
+    List <roadSituation> intersectionData = new Arraylist<roadSituation>();
     public void addIntersectionData(roadSituation RS_EW,roadSituation RS_NS){
         intersectionData_EW.add(RS_EW);
         intersectionData_NS.add(RS_NS);
@@ -16,45 +16,42 @@ public class intersectionsDB {  //一直更新，單位為秒
     //計算今日平均密度
     public double calculateTodayDensityAverage(boolean laneDirection){  
         double TodaysDensityAverage;
-        if(laneDirection){
-            for(roadSituation rS : intersectionData_NS){
-                TodaysDensityAverage += rS.density;
-            }
-        } else {
-            for(roadSituation rS : intersectionData_EW){
-                TodaysDensityAverage += rS.density;
-            }
+        double count = 0.0;
+        EWorNS(laneDirection);
+        for(roadSituation rS : intersectionData){
+            TodaysDensityAverage += rS.density;
+            count++;
         }
-        TodaysDensityAverage /= (double)count; 
+        TodaysDensityAverage /= count; 
         return TodaysDensityAverage;
     }
     //計算今日平均車數
     public double calculateTodayVehicleAmountAverage(boolean laneDirection){  
         double vehicleAmountAverage;
-        if(laneDirection){
-            for(roadSituation rS : intersectionData_NS){
-                vehicleAmountAverage += (double)rS.vehicleAmount;
-            }
-        } else {
-            for(roadSituation rS : intersectionData_EW){
-                vehicleAmountAverage += (double)rS.vehicleAmount;
-            }
+        double count = 0.0;
+        EWorNS(laneDirection);
+        for(roadSituation rS : intersectionData){
+            vehicleAmountAverage += (double)rS.vehicleAmount;
+            count++;
         }
-        vehicleAmountAverage /= (double)count;
+        vehicleAmountAverage /= count;
         return vehicleAmountAverage;
     }
     //計算今日緊急次數
     public double calculateTodayEmergencyVehicleCount(boolean laneDirection){  
         int emergencyVehicleCount;
-        if(laneDirection){
-            for(roadSituation rS : intersectionData_NS){
-                if(rS.emergencyVehicle) emergencyVehicleCount++;
-            }
-        } else {
-            for(roadSituation rS : intersectionData_EW){
-                if(rS.emergencyVehicle) emergencyVehicleCount++;
-            }
+        EWorNS(laneDirection);
+        for(roadSituation rS : intersectionData){
+            if(rS.emergencyVehicle) emergencyVehicleCount++;
         }
         return emergencyVehicleCount;
+    }
+    //判斷該用 東西 還是 南北 資料庫，縮短程式碼用
+    public void EWorNS(boolean laneDirection){
+        if(laneDirection){
+            intersectionData = intersectionData_NS;
+        }else{
+            intersectionData = intersectionData_EW;
+        }
     }
 }
