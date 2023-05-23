@@ -1,67 +1,62 @@
-package main;
-import java.util.Timer;
-import java.util.TimerTask;
-
-public class physicalTrafficSignal {
+class physicalTrafficSignal {
     int[] now_Light = {0, 0};//0: 紅, 1: 綠, 2: 黃
-
     int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
     int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
+
     public void trafficLightTime(double greenLightTime_EW, double yellowLightTime, double greenLightTime_NS, double redLightTime ){
-        Timer LightTimer = new Timer();
-        
-        final TimerTask EW_side_Passable_g = new TimerTask(){
-            public void run(){
-                EW_Light = new int[] {1, 0, 0};
-                NS_Light = new int[] {0, 0, 1};
-                now_Light = new int[] {1, 0};
-            }
-        };
-
-        TimerTask EW_side_Passable_y = new TimerTask(){
-            public void run(){
-                EW_Light = new int[] {0, 1, 0};
-                NS_Light = new int[] {0, 0, 1};
-                now_Light = new int[] {2, 0};
-            }
-        };
-
-        TimerTask Both_side_Passable_r = new TimerTask(){  //全紅時間
-            public void run(){
-                EW_Light = new int[] {0, 0, 1};
-                NS_Light = new int[] {0, 0, 1};
-                now_Light = new int[] {0, 0};
-            }
-        };
-
-        TimerTask NS_side_Passable_g = new TimerTask(){
-            public void run(){
-                EW_Light = new int[] {0, 0, 1};
-                NS_Light = new int[] {1, 0, 0};
-                now_Light = new int[] {0, 1};
-            }
-        };
-
-        TimerTask NS_side_Passable_y = new TimerTask(){
-            public void run(){
-                EW_Light = new int[] {0, 0, 1};
-                NS_Light = new int[] {0, 1, 0};
-                now_Light = new int[] {0, 2};
-            }
-        };
-
+        // private long secend_pri = System.currentTimeMillis() / 1000;
+        // private long secend_now = System.currentTimeMillis() / 1000;
+        boolen 
         while(true){
-            //EW亮起綠燈
-            LightTimer.schedule(EW_side_Passable_g, 0);                 //EW綠燈，等待0秒後執行
-            LightTimer.schedule(EW_side_Passable_y, greenLightTime_EW); //EW黃燈，等待綠燈結束後執行
-            LightTimer.schedule(Both_side_Passable_r, yellowLightTime); //全紅燈，等待黃燈結束後執行
-            LightTimer.schedule(NS_side_Passable_g, redLightTime);      //NS綠燈，等待全紅時間後執行
-            LightTimer.schedule(NS_side_Passable_y, greenLightTime_NS); //NS黃燈，等待綠燈結束後執行
-            LightTimer.schedule(Both_side_Passable_r, yellowLightTime); //全紅燈，等待黃燈結束後執行
-        }
+            //secend_now = System.currentTimeMillis() / 1000;
+            int seconds = (int)greenLightTime_EW; // 倒數秒數
 
+            //切換成東西向綠燈
+            for (int i = seconds; i >= 0; i--) {
+                if (i == greenLightTime_EW && i == seconds){
+                    EW_side_Passable_g();
+                }
+                try {
+                    Thread.sleep(1000); // 暫停 1 秒
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
     }
-    public void trafficLightFlashing(int right){
+    public int[] EW_side_Passable_g (){
+        EW_Light = new int[] {1, 0, 0};
+        NS_Light = new int[] {0, 0, 1};
+        now_Light = new int[] {1, 0};
+        return now_Light;
+    }
+    public int[] EW_side_Passable_y(){
+        EW_Light = new int[] {0, 1, 0};
+        NS_Light = new int[] {0, 0, 1};
+        now_Light = new int[] {2, 0};
+        return now_Light;
+    }
+    public int[] Both_side_Passable_r(){
+        EW_Light = new int[] {0, 0, 1};
+        NS_Light = new int[] {0, 0, 1};
+        now_Light = new int[] {0, 0};
+        return now_Light;
+    }
+    public int[] NS_side_Passable_g(){
+        EW_Light = new int[] {0, 0, 1};
+        NS_Light = new int[] {1, 0, 0};
+        now_Light = new int[] {0, 1};
+        return now_Light;
+    }
+    public int[] NS_side_Passable_y(){
+        EW_Light = new int[] {0, 0, 1};
+        NS_Light = new int[] {0, 1, 0};
+        now_Light = new int[] {0, 2};
+        return now_Light;
+    }
+
+    public int[] trafficLightFlashing(int right){
         if (right == 1) {
             EW_Light = new int[] {0, 2, 0};
             NS_Light = new int[] {0, 0, 2};
@@ -71,8 +66,9 @@ public class physicalTrafficSignal {
             NS_Light = new int[] {0, 2, 0};
             now_Light = new int[] {0, 2};
         }
+        return now_Light;
     }
-    public void trafficLightEmergency(int condition){
+    public int[] trafficLightEmergency(int condition){
         if (condition == 1) {
             EW_Light = new int[] {1, 0, 0};
             NS_Light = new int[] {0, 0, 1};
@@ -86,6 +82,7 @@ public class physicalTrafficSignal {
             NS_Light = new int[] {0, 0, 1};
             now_Light = new int[] {0, 0};
         }
+        return now_Light;
     }
 }
 /*
@@ -98,3 +95,36 @@ public class physicalTrafficSignal {
     * NS_y_light<=1 EW_r_light<=1
     * NS_r_light<=1 EW_r_light<=1 全紅
 */
+
+import java.time.LocalTime;
+import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+public class DailyTaskScheduler {
+    private static final LocalTime TIME_TO_RUN = LocalTime.of(0, 0); // 設定每天執行的時間
+
+    public static void main(String[] args) {
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        
+        // 取得目前時間
+        LocalTime currentTime = LocalTime.now();
+        
+        // 計算到下次執行時間的時間間隔
+        long initialDelay = Duration.between(currentTime, TIME_TO_RUN).getSeconds();
+        if (initialDelay < 0) {
+            initialDelay += Duration.ofDays(1).getSeconds(); // 如果已經過了當天指定的時間，則將初始延遲增加一天
+        }
+        
+        // 使用ScheduledExecutorService在每天指定時間執行任務
+        executor.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                // 在這裡放置你想要在每天指定時間執行的程式碼
+                // 更新數據到day DB
+                System.out.println("執行每天指定時間的任務");
+            }
+        }, initialDelay, Duration.ofDays(1).getSeconds(), TimeUnit.SECONDS);
+    }
+}
