@@ -98,26 +98,6 @@ class roadSituation_sum {
             return 0;
         }
     }
-
-    /*public int densityMode_EW(double Last30DaysDensity_EW){  //密度模板 0: 低 1:正常 2:高
-     *     if(east_westDensity > Last30DaysDensity_EW * 1.5) {
-     *         return 2;  //高密度
-     *     } else if (camera_EW.RS.density < Last30DaysDensity_EW * 0.5){
-     *         return 0;  //低密度
-     *     } else {
-     *         return 1;  //普通密度
-     *     }
-     * }
-     * public int densityMode_NS(double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
-     *     if(camera_NS.RS.density > Last30DaysDensity_NS * 1.5) {
-     *         return 2;
-     *     } else if (camera_NS.RS.density < Last30DaysDensity_NS * 0.5){
-     *         mode_NS = 0;
-     *     } else {
-     *         mode_NS = 1;
-     *     }
-     * }
-     */
     
      public int densityMode_col(double Last30DaysDensity_EW, double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
         int EW=0,NS=0;
@@ -141,8 +121,6 @@ class roadSituation_sum {
     public int densityMode(int EW, int NS){  
         int mode_D;
         if (EW == 2 || NS == 2){
-            // densityDifferenceValue_EW = camera_EW.C.getCalculateDensityDifferenceValue(Last30DaysDensity_EW);
-            // densityDifferenceValue_NS = camera_NS.C.getCalculateDensityDifferenceValue(Last30DaysDensity_NS);
             if (EW == 2 && NS == 2){
                 // 兩邊高密度，增加時間配比
                 mode_D = 0;
@@ -166,7 +144,6 @@ class roadSituation_sum {
 
 class intersectionsDB {  //一直更新，單位為秒
     private double density;
-    //private roadSituation roadSituation_now;//???
     List <roadSituation> intersectionData_EW = new Arraylist<roadSituation>();
     List <roadSituation> intersectionData_NS = new Arraylist<roadSituation>();
     List <roadSituation> intersectionData = new Arraylist<roadSituation>();
@@ -189,20 +166,12 @@ class intersectionsDB {  //一直更新，單位為秒
     }
 }
 
-class intersectionsDB_day {  //testing...
+class intersectionsDB_day {
     private double density;
-    //private roadSituation roadSituation_now;//???
-    List <roadSituation> intersectionData_EW = new Arraylist<roadSituation>();  //要改存日數據?  每日數據ver?
+    List <roadSituation> intersectionData_EW = new Arraylist<roadSituation>();
     List <roadSituation> intersectionData_NS = new Arraylist<roadSituation>();
     List <roadSituation> intersectionData = new Arraylist<roadSituation>();
     public void addIntersectionData(roadSituation RS_EW,roadSituation RS_NS){  
-        //如果日期更新就會存資料
-        //在DB還是可以找到當日詳細數據?
-        //日期          路口名稱    拍攝時間    密度    車子數量    有無緊急(0,1,2,3)    日平均密度
-        //2200/01/01    某路口      00:00:05   2.7     30          1                   
-        //                          00:00:10   2.3     27          1                   
-        //                                        ...
-        //     /n          /n          /n       /n        /n             /n              25.83
         intersectionData_EW.add(RS_EW);
         intersectionData_NS.add(RS_NS);
     }
@@ -224,24 +193,23 @@ class intersectionsDB_day {  //testing...
 
 class calculation {
     private double laneLength;  //300m
-    //private int vehicleAmount;
     private double density;
     private double densityDiffer;
-    public double calculateVehicleDensity(int vehicleAmount){  //vehicleAmount
+    public double calculateVehicleDensity(int vehicleAmount){
         this.density =  (double)vehicleAmount / laneLength;
         return density;
     }
-    public double getCalculateDensityDifferenceValue(double averageDensity){   //averageDensity, currentDensity
-        this.densityDiffer = averageDensity - density;
-        return densityDiffer;
-    }
+    // public double getCalculateDensityDifferenceValue(double averageDensity){
+    //     this.densityDiffer = averageDensity - density;
+    //     return densityDiffer;
+    // }
 }
 
 class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 & 更改模板
     private double Last30DaysDensity_EW;
     private double Last30DaysDensity_NS;
-    private double densityDifferenceValue_EW;//高密度mode計算綠燈增加秒數用
-    private double densityDifferenceValue_NS;//高密度mode計算綠燈增加秒數用
+    // private double densityDifferenceValue_EW;//高密度mode計算綠燈增加秒數用
+    // private double densityDifferenceValue_NS;//高密度mode計算綠燈增加秒數用
     private int mode_EW; //密度模板 0: 低 1:正常 2:高
     private int mode_NS; //密度模板 0: 低 1:正常 2:高
     private int adjustmentResult;
@@ -261,11 +229,12 @@ class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 &
     private intersectionsDB iDb = new intersectionsDB();
     private east_westDetectCamera camera_EW;
     private north_southDetectCamera camera_NS;
-    private trafficLight tL;  //用來傳我們要更改的Mode進去
+    private trafficLight tL;  //用來傳我們要更改的Mode進去  //parameter
     private roadSituation_sum road_sum;
 
     private Mode mode;
-    
+    private physicalTrafficSignal pTS;
+    pTS.EW_side_Passable_g();
     while(true){
         dateNow = LocalDate.now();
         if(dateNow - date == 1){

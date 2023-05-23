@@ -32,7 +32,7 @@ class physicalTrafficSignal {
     public void trafficLightTime(double greenLightTime_EW, double yellowLightTime, double greenLightTime_NS, double redLightTime ){
         Timer LightTimer = new Timer();
         
-        TimerTask EW_side_Passable_g = new TimerTask(){
+        final TimerTask EW_side_Passable_g = new TimerTask(){
             public void run(){
                 EW_Light = new int[] {1, 0, 0};
                 NS_Light = new int[] {0, 0, 1};
