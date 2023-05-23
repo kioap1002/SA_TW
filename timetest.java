@@ -25,64 +25,71 @@ public class TimerExample {
 }
 
 class trafficLightTime {
-    // private double totalTime;
-    // private double greenLightTime;
-    // private double redLightTime;
-    // private double yellowLightTime;
-    // private trafficLight trafficL;
-    // trafficLightTime(double TT, double GLT){ //只有高密度模板和普通模板會使用，高密度輸入的TT是增加的，正常TT是預設
-    //     totalTime = TT;
-    //     greenLightTime = GLT;
-    //     redLightTime = TT - GLT - yellowLightTime;
-    //     // 一輪紅綠燈的順序
-    //     // GT_EW => (YT_EW -> RT_EW)
-    //     // (YT_NS -> RT_NS) => GT_NS
-    // }
-    public void physicalTrafficSignal(double greenLightTime, double yellowLightTime, double redLightTime, ){
-        boolean greenLight_EW = 0;
-        int yellowLight_EW = 0;
-        int redLight_EW = 0;
-        int nowLight_EW = 0;//0: 紅, 1: 綠, 2: 黃
 
-        boolean greenLight_NS = 0;
-        int yellowLight_NS = 0;
-        int redLight_NS = 0;
-        int nowLight_NS = 0;//0: 紅, 1: 綠, 2: 黃
+    public void physicalTrafficSignal(double greenLightTime_EW, double yellowLightTime, double greenLightTime_NS, double redLightTime ){
 
-        Timer greenLightTimer = new Timer();
-        Timer yellowLightTimer = new Timer();
-        Timer redLightTimer = new Timer();
-        Timer totalTimer = new Timer();
+        int EW_now_Light = 0;//0: 紅, 1: 綠, 2: 黃
+        int NS_now_Light = 0;//0: 紅, 1: 綠, 2: 黃
         
-        totalTimer.schedule(new TimerTask(){
+        int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
+        int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
 
-            greenLightTimer.schedule(new TimerTask(){
-                greenLight_EW = 1;
-                yellowLight_EW = 0;
-                redLight_EW = 0;
-                
+        Timer LightTimer = new Timer();
+        
+        TimerTask EW_side_Passable_g = new TimerTask(){
+            public void run(){
+                EW_Light = new int[] {1, 0, 0};
+                NS_Light = new int[] {0, 0, 1};
+            }
+        }
 
+        TimerTask EW_side_Passable_y = new TimerTask(){
+            public void run(){
+                EW_Light = new int[] {0, 1, 0};
+                NS_Light = new int[] {0, 0, 1};
+            }
+        }
 
-                nowLight_EW++;
-            }, greenLightTime);
-            yellowLightTimer.schedule(new TimerTask(){
-                greenLight_EW = 0;
-                yellowLight_EW = 1;
-                redLight_EW = 0;
-                
-                nowLight_EW++;
-            }, yellowLightTime);
-            redLightTimer.schedule(new TimerTask(){
-                greenLight_EW = 0;
-                yellowLight_EW = 0;
-                redLight_EW = 1;
-                
-                nowLight_EW=0;
-            }, redLightTime);
+        TimerTask Both_side_Passable_r = new TimerTask(){
+            public void run(){
+                EW_Light = new int[] {0, 0, 1};
+                NS_Light = new int[] {0, 0, 1};
+            }
+        }
 
-            // GT_EW(50)               => (YT_EW(3) -> RT_EW(47))
-            // (YT_NS(3) -> RT_NS(47)) => GT_NS(50)
-        }, 0, greenLightTime + yellowLightTime + redLightTime);
+        TimerTask NS_side_Passable_g = new TimerTask(){
+            public void run(){
+                EW_Light = new int[] {0, 0, 1};
+                NS_Light = new int[] {1, 0, 0};
+            }
+        }
+
+        TimerTask NS_side_Passable_y = new TimerTask(){
+            public void run(){
+                EW_Light = new int[] {0, 0, 1};
+                NS_Light = new int[] {0, 1, 0};
+            }
+        }
+
+        while(true){
+            //EW亮起綠燈
+            LightTimer.schedule(EW_side_Passable_g, 0);                 //EW綠燈，等待0秒後執行
+            LightTimer.schedule(EW_side_Passable_y, greenLightTime_EW); //EW黃燈，等待綠燈結束後執行
+            LightTimer.schedule(Both_side_Passable_r, yellowLightTime); //全紅燈，等待黃燈結束後執行
+            LightTimer.schedule(NS_side_Passable_g, redLightTime);      //NS綠燈，等待全紅時間後執行
+            LightTimer.schedule(NS_side_Passable_y, greenLightTime_NS); //NS黃燈，等待綠燈結束後執行
+            LightTimer.schedule(Both_side_Passable_r, yellowLightTime); //全紅燈，等待黃燈結束後執行
+
+        }
     }
-    
 }
+/*
+    * 當EW_side=1 東西向通行
+    * EW_g_light<=1 NS_r_light<=1 EW綠燈 NS紅燈
+    * EW_y_light<=1 NS_r_light<=1 EW黃燈 NS紅燈
+    * EW_r_light<=1 NS_r_light<=1 全紅
+    * 當EW_side=0 南北向通行
+    * NS_g_light<=1 EW_r_light<=1 
+    * NS_y_light<=1 EW_r_light<=1
+    * NS_r_light<=1 EW_r_light<=1 全紅
+*/
