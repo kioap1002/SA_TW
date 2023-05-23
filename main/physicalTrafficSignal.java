@@ -1,12 +1,24 @@
-class physicalTrafficSignal {
+package main;
+// --------------
+import java.time.LocalTime;
+import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+// --------------
+
+
+public class physicalTrafficSignal {
     int[] now_Light = {0, 0};//0: 紅, 1: 綠, 2: 黃
     int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
     int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
-
+    physicalTrafficSignal(){
+        
+    }
     public void trafficLightTime(double greenLightTime_EW, double yellowLightTime, double greenLightTime_NS, double redLightTime ){
         // private long secend_pri = System.currentTimeMillis() / 1000;
         // private long secend_now = System.currentTimeMillis() / 1000;
-        boolen 
+        //boolen 
         while(true){
             //secend_now = System.currentTimeMillis() / 1000;
             int seconds = (int)greenLightTime_EW; // 倒數秒數
@@ -96,13 +108,9 @@ class physicalTrafficSignal {
     * NS_r_light<=1 EW_r_light<=1 全紅
 */
 
-import java.time.LocalTime;
-import java.time.Duration;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-public class DailyTaskScheduler {
+
+class DailyTaskScheduler {
     private static final LocalTime TIME_TO_RUN = LocalTime.of(0, 0); // 設定每天執行的時間
 
     public static void main(String[] args) {

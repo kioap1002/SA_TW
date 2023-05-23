@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Date;
 import java.time.*;
-public class controlUnit {  //有手動跟自動的模式，loop控制更新資料庫 & 更改模板
+public class controller {  //有手動跟自動的模式，loop控制更新資料庫 & 更改模板
     private double Last30DaysDensity_EW;
     private double Last30DaysDensity_NS;
     // private double densityDifferenceValue_EW;//高密度mode計算綠燈增加秒數用
