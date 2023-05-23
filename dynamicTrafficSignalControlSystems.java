@@ -59,7 +59,7 @@ class north_southDetectCamera extends detectCamera{
 class roadSituation {
     private Date time;
     private boolean laneDirection;
-    private int vehicleAmount;
+    protected int vehicleAmount; //private
     protected boolean emergencyVehicle;  //private
     protected double density;  //private
     // private roadSituation_emergency RS_E;
@@ -71,7 +71,6 @@ class roadSituation {
         density = den;
     }
 }
-
 
 //單純用來設定和放置 east_westLane 跟 north_southLane 的
 class roadSituation_sum {
@@ -99,7 +98,7 @@ class roadSituation_sum {
         }
     }
     
-     public int densityMode_col(double Last30DaysDensity_EW, double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
+    public int densityMode_col(double Last30DaysDensity_EW, double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
         int EW=0,NS=0;
         if(east_westDensity > Last30DaysDensity_EW * 1.5) {
             EW = 2;  //高密度
@@ -146,24 +145,34 @@ class intersectionsDB {  //一直更新，單位為秒
     private double density;
     List <roadSituation> intersectionData_EW = new Arraylist<roadSituation>();
     List <roadSituation> intersectionData_NS = new Arraylist<roadSituation>();
-    List <roadSituation> intersectionData = new Arraylist<roadSituation>();
     public void addIntersectionData(roadSituation RS_EW,roadSituation RS_NS){
         intersectionData_EW.add(RS_EW);
         intersectionData_NS.add(RS_NS);
     }
-    public double calculateTheLast30DaysDensityAverage(boolean laneDirection){  //density
-        double average_30 = 0.0;
-        if(laneDirection){
-            intersectionData = intersectionData_NS;
-        }else{
-            intersectionData = intersectionData_EW;
+    //計算今日平均密度
+    public double calculateTodayDensityAverage(boolean laneDirection){  
+        double TodaysDensityAverage;
+        double count=0.0;
+        for(roadSituation rS : intersectionData_EW){
+            TodaysDensityAverage += rS.density;
+            count += 1.0;
         }
-        List<String> TheLast30Days = intersectionData.stream().skip(Math.max(0, intersectionData.size() - 30)).collect(Collectors.toList());
-        for (roadSituation RS_I : TheLast30Days){
-            average_30 += RS_I.density;
-        }
-        return average_30 / 30.0;
+        TodaysDensityAverage /=count; 
+        return TodaysDensityAverage;
     }
+    //計算今日平均車數
+    public double calculateTodayVehicleAmountAverage(boolean laneDirection){  
+        double vehicleAmountAverage;
+        
+        return vehicleAmountAverage;
+    }
+    //計算今日緊急次數
+    public double calculateTodayEmergencyVehicleCount(boolean laneDirection){  
+        double emergencyVehicleCount;
+        
+        return emergencyVehicleCount;
+    }
+
 }
 
 class intersectionsDB_day {
