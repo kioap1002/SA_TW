@@ -1,6 +1,5 @@
 package main;
 
-
 public abstract class Mode{ //回傳已經計算完的秒數
     public abstract changedParameter changeMode();
 }
@@ -17,22 +16,18 @@ class emergencyMode extends Mode{
     }
     public changedParameter changeMode(){
         changedParameter cP = new changedParameter();
-        
+
         switch (EV) {
-            case 3: //both EV
-                //全紅    
+            case 3: //both EV //全紅    
                 cP.setParameter(3, 3, 3, 0);
                 break;
-            case 2:
-                //NS EV
+            case 2://NS EV
                 cP.setParameter(2, 2, 2, 0);
                 break;
-            case 1:
-                //EW EV
+            case 1://EW EV
                 cP.setParameter(1, 1, 1, 0);
                 break;
-            default:
-                //something wrong
+            default://something wrong
                 System.out.println("wrong message");
                 break;
         }
@@ -47,6 +42,9 @@ class HighDensityMode extends Mode{
         this.D = D;
         this.EW_dF = EW_dF;
         this.NS_dF = NS_dF;
+    }
+    public double calculateGreenLightSeconds(double density){
+
     }
     public changedParameter changeMode(){
         return new changedParameter();//x

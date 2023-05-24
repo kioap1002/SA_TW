@@ -16,9 +16,6 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
     private int adjustmentResult;    //目前沒用
     private double timer; //持續時間 //目前沒用
 
-    // private Date time = now();
-    // private Date timeNow = now();
-    
     private LocalTime time = LocalTime.now();  //控制時間
     private LocalTime timeNow = LocalTime.now();  //控制時間(變動ver)
     private int today = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
@@ -33,6 +30,8 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
 
     private Mode mode;
     private physicalTrafficSignal pTS;
+    
+    //需要有地方取得路口資訊
     // pTS.EW_side_Passable_g();
     while(true){
         tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
@@ -43,16 +42,12 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
             roadSituation todayRS_EW = new roadSituation(day, false, iDb.calculateTodayVehicleAmountAverage(false), iDb.calculateTodayEmergencyVehicleCount(false), iDb.calculateTodayDensityAverage(false));
             roadSituation todayRS_NS = new roadSituation(day, true, iDb.calculateTodayVehicleAmountAverage(true), iDb.calculateTodayEmergencyVehicleCount(true), iDb.calculateTodayDensityAverage(true));
             iDb_d.addIntersectionData(todayRS_EW, todayRS_NS);
-
             // 清空資料庫，重製時間
             iDb = new intersectionsDB();
             //iDb.addIntersectionData(todayRS_EW, todayRS_NS); //資料庫清空不需要預設資料
             today = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
             tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
-            
-        }//else { 這個else好像不需要，因為tomarrow - today == 1的時候還是要執行下面的程式碼
-            //持續計算密度&拍照
-        //}
+        }
 
         timeNow = LocalTime.now();
         if(time + 5 <= timeNow){
@@ -62,10 +57,13 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
             /*紅燈燈號結束前五秒 || 閃燈狀態下(10秒判斷一次)，從秒資料庫獲取最新一筆資料來判斷模板的變更與否 */
             road_sum = new roadSituation_sum(camera_EW.RS.emergencyVehicle, camera_NS.RS.emergencyVehicle, camera_EW.RS.density, camera_NS.RS.density);
             iDb.addIntersectionData(camera_EW.RS,camera_NS.RS);
+
             time = LocalTime.now();
             timeNow = LocalTime.now();
+
             Last30DaysDensity_EW = iDb_d.calculateTheLast30DaysDensityAverage(false);
             Last30DaysDensity_NS = iDb_d.calculateTheLast30DaysDensityAverage(true);
+            
             if(road_sum.haveEmergency() != 0){
                 mode = new emergencyMode(road_sum.haveEmergency());
             }else{  

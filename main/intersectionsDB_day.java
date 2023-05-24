@@ -24,7 +24,7 @@ public class intersectionsDB_day {
         }else{
             intersectionData = intersectionData_EW;
         }
-        List<String> TheLast30Days = intersectionData.stream().skip(Math.max(0, intersectionData.size() - 30)).collect(Collectors.toList());
+        List<roadSituation> TheLast30Days = intersectionData.stream().skip(Math.max(0, intersectionData.size() - 30)).collect(Collectors.toList());
         for (roadSituation RS_I : TheLast30Days){
             average_30 += RS_I.density;
         }
