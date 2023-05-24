@@ -5,11 +5,11 @@ import java.util.Date;
 public class roadSituation {
     private Date time;
     private boolean laneDirection;
-    protected int vehicleAmount; //private
+    protected double vehicleAmount; //private
     protected boolean emergencyVehicle;  //private
     protected double density;  //private
     // private roadSituation_emergency RS_E;
-    roadSituation(Date T, boolean LD, int VA, boolean EV, double den) {
+    roadSituation(Date T, boolean LD, double VA, boolean EV, double den) {
         time = T;
         laneDirection = LD;
         vehicleAmount = VA;
@@ -19,7 +19,7 @@ public class roadSituation {
     public boolean getLaneDirection(){
         return laneDirection;
     }
-    public int getVehicleAmount(){
+    public double getVehicleAmount(){
         return vehicleAmount;
     }
     public boolean getEmergencyVehicle(){

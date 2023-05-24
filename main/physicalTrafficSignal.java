@@ -15,24 +15,34 @@ public class physicalTrafficSignal {
     physicalTrafficSignal(){
         
     }
+    int seconds = 0; // 倒數秒數
     public void trafficLightTime(double greenLightTime_EW, double yellowLightTime, double greenLightTime_NS, double redLightTime ){
         // private long secend_pri = System.currentTimeMillis() / 1000;
         // private long secend_now = System.currentTimeMillis() / 1000;
         //boolen 
         while(true){ //應該會在controller做
             //secend_now = System.currentTimeMillis() / 1000;
-            int seconds = (int)greenLightTime_EW; // 倒數秒數
-
+            seconds = (int)greenLightTime_EW; // 倒數秒數
             //切換成東西向綠燈
+            EW_side_Passable_g();
             for (int i = seconds; i >= 0; i--) {
-                if (i == greenLightTime_EW && i == seconds){
-                    EW_side_Passable_g();
-                }
                 try {
                     Thread.sleep(1000); // 暫停 1 秒
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+            EW_side_Passable_y();
+            try {
+                Thread.sleep((int)yellowLightTime*1000); // 黃燈時間
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Both_side_Passable_r();
+            try {
+                Thread.sleep((int)yellowLightTime*1000); // 全紅時間
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
         }

@@ -23,9 +23,8 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
     
     private LocalTime time = LocalTime.now();  //控制時間
     private LocalTime timeNow = LocalTime.now();  //控制時間(變動ver)
-    private int secend = (int)System.currentTimeMillis() / 1000;
-    private LocalDate date = LocalDate.now();  //控制日期
-    private LocalDate dateNow = LocalDate.now();  //控制日期(變動ver)
+    private int today = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
+    private int tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
 
     private intersectionsDB iDb = new intersectionsDB();
     private intersectionsDB_day iDb_d = new intersectionsDB_day();
@@ -36,12 +35,28 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
 
     private Mode mode;
     private physicalTrafficSignal pTS;
-    pTS.EW_side_Passable_g();
+    // pTS.EW_side_Passable_g();
     while(true){
-        dateNow = LocalDate.now();
-        if(dateNow - date == 1){
-            //換日，把資料丟進日資料庫   (清空秒資料庫?)//清空
+        tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24)
+        if(tomarrow - today == 1){
+            //換日，處理今日資料
+            LocalDate day = LocalDate.new();
 
+            
+            
+            
+            roadSituation todayRS_NS =new roadSituation(day, true, iDb.calculateTodayVehicleAmountAverage(true), iDb.calculateTodayEmergencyVehicleCount(true), iDb.calculateTodayDensityAverage(true));
+            iDb.calculateTodayDensityAverage(false);
+            iDb.calculateTodayVehicleAmountAverage(false);
+            iDb.calculateTodayEmergencyVehicleCount(false);
+            roadSituation todayRS_EW =new roadSituation();
+            iDb_d.addIntersectionData();
+
+            // 清空資料庫，重製時間
+            private intersectionsDB iDb = new intersectionsDB(todayRS_EW, todayRS_NS);
+            today = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24)
+            tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24)
+            
         }else {
             //持續計算密度&拍照
         }
