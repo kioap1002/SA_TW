@@ -1,7 +1,5 @@
 package main;
-import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 public class intersectionsDB {  //一直更新，單位為秒
@@ -14,7 +12,7 @@ public class intersectionsDB {  //一直更新，單位為秒
     }
     //計算今日平均密度
     public double calculateTodayDensityAverage(boolean laneDirection){  
-        double DensityAverage;
+        double DensityAverage = 0.0;
         double count = 0.0;
         EWorNS(laneDirection);
         for(roadSituation rS : intersectionData){
@@ -25,7 +23,7 @@ public class intersectionsDB {  //一直更新，單位為秒
     }
     //計算今日平均車數
     public double calculateTodayVehicleAmountAverage(boolean laneDirection){  
-        double vehicleAmountAverage;
+        double vehicleAmountAverage = 0.0;
         double count = 0.0;
         EWorNS(laneDirection);
         for(roadSituation rS : intersectionData){
@@ -36,7 +34,7 @@ public class intersectionsDB {  //一直更新，單位為秒
     }
     //計算今日緊急次數
     public double calculateTodayEmergencyVehicleCount(boolean laneDirection){  
-        int emergencyVehicleCount;
+        int emergencyVehicleCount = 0;
         EWorNS(laneDirection);
         for(roadSituation rS : intersectionData){
             if(rS.emergencyVehicle) emergencyVehicleCount++;
