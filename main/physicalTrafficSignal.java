@@ -12,9 +12,9 @@ public class physicalTrafficSignal {
     int[] now_Light = {0, 0};//0: 紅, 1: 綠, 2: 黃
     int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
     int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
-    physicalTrafficSignal(){
+    // physicalTrafficSignal(){
         
-    }
+    // }
     int seconds = 0; // 倒數秒數
     public void trafficLightTime(double greenLightTime_EW, double yellowLightTime, double greenLightTime_NS, double redLightTime ){
         // private long secend_pri = System.currentTimeMillis() / 1000;

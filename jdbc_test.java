@@ -5,9 +5,9 @@ import java.sql.Statement;
 
 public class jdbc_test {
     public static void main(String[] args) {
-        String url = "jdbc:mysql://localhost:3306/mydatabase";
-        String username = "your-username";
-        String password = "your-password";
+        String url = "jdbc:mysql://localhost:3306/DTCS_DB";
+        String username = "root";
+        String password = "dtcsdb";
 
         try {
             // 連接到資料庫

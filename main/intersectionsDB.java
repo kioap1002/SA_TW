@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 public class intersectionsDB {  //一直更新，單位為秒
-    List <roadSituation> intersectionData_EW = new Arraylist<roadSituation>();
-    List <roadSituation> intersectionData_NS = new Arraylist<roadSituation>();
-    List <roadSituation> intersectionData = new Arraylist<roadSituation>();
+    List <roadSituation> intersectionData_EW = new ArrayList<roadSituation>();
+    List <roadSituation> intersectionData_NS = new ArrayList<roadSituation>();
+    List <roadSituation> intersectionData = new ArrayList<roadSituation>();
     public void addIntersectionData(roadSituation RS_EW,roadSituation RS_NS){
         intersectionData_EW.add(RS_EW);
         intersectionData_NS.add(RS_NS);

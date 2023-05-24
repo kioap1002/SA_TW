@@ -37,25 +37,28 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
     private physicalTrafficSignal pTS;
     // pTS.EW_side_Passable_g();
     while(true){
-        tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24)
+        tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
         if(tomarrow - today == 1){
             //換日，處理今日資料
-            LocalDate day = LocalDate.new();
+            LocalDate day = LocalDate.now();
 
             
             
-            
-            roadSituation todayRS_NS =new roadSituation(day, true, iDb.calculateTodayVehicleAmountAverage(true), iDb.calculateTodayEmergencyVehicleCount(true), iDb.calculateTodayDensityAverage(true));
+            //LD=> 0:EW, 1:NS
+            roadSituation todayRS_NS = new roadSituation(day, true, iDb.calculateTodayVehicleAmountAverage(true), iDb.calculateTodayEmergencyVehicleCount(true), iDb.calculateTodayDensityAverage(true));
             iDb.calculateTodayDensityAverage(false);
             iDb.calculateTodayVehicleAmountAverage(false);
             iDb.calculateTodayEmergencyVehicleCount(false);
-            roadSituation todayRS_EW =new roadSituation();
-            iDb_d.addIntersectionData();
+            roadSituation todayRS_EW = new roadSituation(day, false, iDb.calculateTodayVehicleAmountAverage(false), iDb.calculateTodayEmergencyVehicleCount(false), iDb.calculateTodayDensityAverage(false));
+            iDb_d.addIntersectionData(todayRS_EW, todayRS_NS);
 
             // 清空資料庫，重製時間
-            private intersectionsDB iDb = new intersectionsDB(todayRS_EW, todayRS_NS);
-            today = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24)
-            tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24)
+            // private intersectionsDB iDb = new intersectionsDB(todayRS_EW, todayRS_NS);
+            //iDb = new intersectionsDB(todayRS_EW, todayRS_NS);
+            iDb = new intersectionsDB();
+            iDb.addIntersectionData(todayRS_EW, todayRS_NS);
+            today = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
+            tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
             
         }else {
             //持續計算密度&拍照

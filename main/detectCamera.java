@@ -10,7 +10,7 @@ public class detectCamera {
     private calculation C = new calculation();
     protected roadSituation RS;  //private
     detectCamera(boolean LD){
-        time = now();
+        time = new Date();  //time = LocalTime.now();
         laneDirection = LD;
     }
     // 拍攝路口 將拍攝後的照片交給其他函式(?)處理
@@ -23,7 +23,7 @@ public class detectCamera {
     // 處理路口照片 並將資料更新???
     public void detectIntersections(String imageMassage){
         boolean EV;
-        int VA;
+        double VA;
         System.out.println(imageMassage);//處理照片資訊，因為麻煩先這樣表示
         //IMlist[1]=[false, 30]; // EV, VA 處理照片資訊完得到的資料，因為麻煩先這樣表示
         //updateCondition(IMlist[0],IMlist[1]);
