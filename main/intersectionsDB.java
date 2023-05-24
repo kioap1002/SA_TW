@@ -11,7 +11,6 @@ public class intersectionsDB {  //一直更新，單位為秒
     public void addIntersectionData(roadSituation RS_EW,roadSituation RS_NS){
         intersectionData_EW.add(RS_EW);
         intersectionData_NS.add(RS_NS);
-        count++;
     }
     //計算今日平均密度
     public double calculateTodayDensityAverage(boolean laneDirection){  

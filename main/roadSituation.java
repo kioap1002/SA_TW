@@ -16,4 +16,16 @@ public class roadSituation {
         emergencyVehicle = EV;
         density = den;
     }
+    public boolean getLaneDirection(){
+        return laneDirection;
+    }
+    public int getVehicleAmount(){
+        return vehicleAmount;
+    }
+    public boolean getEmergencyVehicle(){
+        return emergencyVehicle;
+    }
+    public double getDensity(){
+        return density;
+    }
 }
