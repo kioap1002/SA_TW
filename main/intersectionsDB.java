@@ -15,15 +15,14 @@ public class intersectionsDB {  //一直更新，單位為秒
     }
     //計算今日平均密度
     public double calculateTodayDensityAverage(boolean laneDirection){  
-        double TodaysDensityAverage;
+        double DensityAverage;
         double count = 0.0;
         EWorNS(laneDirection);
         for(roadSituation rS : intersectionData){
-            TodaysDensityAverage += rS.density;
+            DensityAverage += rS.density;
             count++;
         }
-        TodaysDensityAverage /= count; 
-        return TodaysDensityAverage;
+        return DensityAverage / count;
     }
     //計算今日平均車數
     public double calculateTodayVehicleAmountAverage(boolean laneDirection){  
@@ -34,8 +33,7 @@ public class intersectionsDB {  //一直更新，單位為秒
             vehicleAmountAverage += (double)rS.vehicleAmount;
             count++;
         }
-        vehicleAmountAverage /= count;
-        return vehicleAmountAverage;
+        return vehicleAmountAverage / count;
     }
     //計算今日緊急次數
     public double calculateTodayEmergencyVehicleCount(boolean laneDirection){  

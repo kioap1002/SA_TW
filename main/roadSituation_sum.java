@@ -59,10 +59,10 @@ public class roadSituation_sum {
                 mode_D = 2;
             }
         } else if (EW == 1 || NS == 1){
-            /*套用正常模板 */
+            // 套用正常模板
             mode_D = 3;
         } else {
-            /*套用低密度模板 */
+            // 套用低密度模板
             mode_D = 4;
         }
         return mode_D;

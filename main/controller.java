@@ -50,6 +50,8 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
         if(time + 5 <= timeNow){
             camera_EW.shootIntersections();
             camera_NS.shootIntersections();
+            /*每五秒拍攝一次路口，更新秒資料庫 */
+            /*紅燈燈號結束前五秒 || 閃燈狀態下(10秒判斷一次)，從秒資料庫獲取最新一筆資料來判斷模板的變更與否 */
             road_sum = new roadSituation_sum(camera_EW.RS.emergencyVehicle, camera_NS.RS.emergencyVehicle, camera_EW.RS.density, camera_NS.RS.density);
             iDb.addIntersectionData(camera_EW.RS,camera_NS.RS);
             time = LocalTime.now();
