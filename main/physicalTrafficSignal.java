@@ -19,7 +19,7 @@ public class physicalTrafficSignal {
         // private long secend_pri = System.currentTimeMillis() / 1000;
         // private long secend_now = System.currentTimeMillis() / 1000;
         //boolen 
-        while(true){
+        while(true){ //應該會在controller做
             //secend_now = System.currentTimeMillis() / 1000;
             int seconds = (int)greenLightTime_EW; // 倒數秒數
 
