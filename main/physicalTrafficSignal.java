@@ -56,6 +56,7 @@ public class physicalTrafficSignal {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
         }
     }
     public int[] EW_side_Passable_g (){
@@ -117,6 +118,23 @@ public class physicalTrafficSignal {
         }
         return now_Light;
     }
+    public void changeLightMode(int before, int after){
+        if((before == 3 && after == 2)||(before == 2 && after == 3)){
+            //直接改變秒數
+        } else if((before == 3 && after == 1)||(before == 2 && after == 1)||(before == 0 && after == 1)){
+            //路權大的那一方黃燈時改變
+        } else if((before == 3 && after == 0)||(before == 2 && after == 0)){
+            //兩方：綠燈方黃燈再全紅
+            //緊急車輛方為綠燈：直接更改
+            //緊急車輛方為紅燈：對向車道進入黃燈時間，緊急向車道再切換成綠燈
+        } else if((before == 1 && after == 3)||(before == 0 && after == 3)){
+            //全紅三秒後，套用計算好的秒數，依序顯示(直接切換)
+        } else if((before == 1 && after == 2)||(before == 0 && after == 3)){
+            //全紅三秒後，回歸基礎，依序顯示(直接切換)
+        } else {
+            //不切換
+        }
+    }
 }
 /*
  * 當EW_side=1 東西向通行
@@ -161,6 +179,6 @@ public class physicalTrafficSignal {
  * 6. 低⇒緊、緊⇒低：不需要考慮
  */
 
-
-
-
+//暴力解法1: trafficLightTime多一個參數控制全紅/黃2燈時間，while(true){...}之前先透過這個參數判定要不要跑3秒
+//暴力解法2: 多一個trafficLightTime，裡面多一個參數控制全紅/黃2燈時間
+//暴力解法3: changeLightMode套用模板之前先跑3秒
