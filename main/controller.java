@@ -13,13 +13,11 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
     // private double densityDifferenceValue_NS;//高密度mode計算綠燈增加秒數用
     private int mode_EW; //密度模板 0: 低 1:正常 2:高
     private int mode_NS; //密度模板 0: 低 1:正常 2:高
-    private int adjustmentResult;
-    private double timer; //持續時間
+    private int adjustmentResult;    //目前沒用
+    private double timer; //持續時間 //目前沒用
 
-    // https://www.uuu.com.tw/Public/content/article/18/20180430.htm
     // private Date time = now();
     // private Date timeNow = now();
-    // https://blog.csdn.net/qq_37370132/article/details/107905587
     
     private LocalTime time = LocalTime.now();  //控制時間
     private LocalTime timeNow = LocalTime.now();  //控制時間(變動ver)
@@ -41,28 +39,20 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
         if(tomarrow - today == 1){
             //換日，處理今日資料
             LocalDate day = LocalDate.now();
-
-            
-            
             //LD=> 0:EW, 1:NS
-            roadSituation todayRS_NS = new roadSituation(day, true, iDb.calculateTodayVehicleAmountAverage(true), iDb.calculateTodayEmergencyVehicleCount(true), iDb.calculateTodayDensityAverage(true));
-            iDb.calculateTodayDensityAverage(false);
-            iDb.calculateTodayVehicleAmountAverage(false);
-            iDb.calculateTodayEmergencyVehicleCount(false);
             roadSituation todayRS_EW = new roadSituation(day, false, iDb.calculateTodayVehicleAmountAverage(false), iDb.calculateTodayEmergencyVehicleCount(false), iDb.calculateTodayDensityAverage(false));
+            roadSituation todayRS_NS = new roadSituation(day, true, iDb.calculateTodayVehicleAmountAverage(true), iDb.calculateTodayEmergencyVehicleCount(true), iDb.calculateTodayDensityAverage(true));
             iDb_d.addIntersectionData(todayRS_EW, todayRS_NS);
 
             // 清空資料庫，重製時間
-            // private intersectionsDB iDb = new intersectionsDB(todayRS_EW, todayRS_NS);
-            //iDb = new intersectionsDB(todayRS_EW, todayRS_NS);
             iDb = new intersectionsDB();
-            iDb.addIntersectionData(todayRS_EW, todayRS_NS);
+            //iDb.addIntersectionData(todayRS_EW, todayRS_NS); //資料庫清空不需要預設資料
             today = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
             tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
             
-        }else {
+        }//else { 這個else好像不需要，因為tomarrow - today == 1的時候還是要執行下面的程式碼
             //持續計算密度&拍照
-        }
+        //}
 
         timeNow = LocalTime.now();
         if(time + 5 <= timeNow){

@@ -1,7 +1,6 @@
 package main;
 import java.time.LocalDate;
 import java.util.Date;
-
 //單純用來放置資料的物件
 public class roadSituation {
     private Date time;
@@ -21,8 +20,6 @@ public class roadSituation {
         emergencyVehicle = EV;
         density = den;
     }
-    // roadSituation todayRS_NS = new roadSituation(day, true, iDb.calculateTodayVehicleAmountAverage(true), 
-    // iDb.calculateTodayEmergencyVehicleCount(true), iDb.calculateTodayDensityAverage(true));
     roadSituation(LocalDate T, boolean LD, double VA_aver, double EV_n, double den_aver) {
         time_day = T;
         laneDirection = LD;
