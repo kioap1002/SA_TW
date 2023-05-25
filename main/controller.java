@@ -29,7 +29,7 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
     private roadSituation_sum road_sum;
 
     private Mode mode;
-    private physicalTrafficSignal pTS;
+    private physicalTrafficSignal pTS = new physicalTrafficSignal();
     
     //需要有地方取得路口資訊
     // pTS.EW_side_Passable_g();
@@ -85,8 +85,13 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
                         break;
                 }
             }
+<<<<<<< Updated upstream
             // tL = new trafficLight(mode.changeMode());
             pTS.setCP(mode.chandeMode());
+=======
+            tL = new trafficLight(mode.changeMode());
+            pTS.setcP(mode.changeMode());
+>>>>>>> Stashed changes
         }
 
     }

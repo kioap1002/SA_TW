@@ -49,7 +49,7 @@ class HighDensityMode extends Mode{
         //this.modeID = 3;
     }
     public double calculateGreenLightSeconds(double density){
-
+        return 0.0;
     }
     public changedParameter changeMode(){
         return new changedParameter();//x
