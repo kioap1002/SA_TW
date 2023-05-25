@@ -1,11 +1,11 @@
 package main;
 
 public abstract class Mode{ //回傳已經計算完的秒數
-    int modeID = 2;// 0: 緊急 1: 低 2: 基礎 3: 高
+    // int modeID = 2;// 0: 緊急 1: 低 2: 基礎 3: 高
     public abstract changedParameter changeMode();
-    public int getModeID(){
-        return modeID;
-    }
+    // public int getModeID(){
+    //     return modeID;
+    // }
 }
 
 class emergencyMode extends Mode{
@@ -17,7 +17,7 @@ class emergencyMode extends Mode{
     // }
     emergencyMode(int EV){
         this.EV = EV;
-        this.modeID = 0;
+        //this.modeID = 0;
     }
     public changedParameter changeMode(){
         changedParameter cP = new changedParameter();
@@ -46,7 +46,7 @@ class HighDensityMode extends Mode{
         this.D = D;
         this.EW_dF = EW_dF;
         this.NS_dF = NS_dF;
-        this.modeID = 3;
+        //this.modeID = 3;
     }
     public double calculateGreenLightSeconds(double density){
 
@@ -58,7 +58,7 @@ class HighDensityMode extends Mode{
 }
 class BasicDensityMode extends Mode{
     BasicDensityMode(){
-        this.modeID = 2;
+        //this.modeID = 2;
     }
     public changedParameter changeMode(){
         //拿到該路口的defalt
@@ -74,7 +74,7 @@ class LowDensityMode extends Mode{
     LowDensityMode(int EW, int NS){
         EW_right = EW;
         NS_right = NS;
-        this.modeID = 1;
+        //this.modeID = 1;
     }
     public changedParameter changeMode(){
         changedParameter cP = new changedParameter();
