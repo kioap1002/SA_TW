@@ -1,65 +1,63 @@
 package main;
 
 public class physicalTrafficSignal {
-    int[] now_Light = {0, 0, 2};//0: 紅, 1: 綠, 2: 黃，第三個代表現在輪到哪一方，0: 閃燈 1: EW 2: NS，預設2
+    int[] now_Light = {0, 0, 2};//0: 紅, 1: 綠, 2: 黃，now_Light[2]代表現在輪到哪一方，0: 閃燈, 1: EW, 2: NS，預設2
     int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
     int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
 
     int seconds = 0; // 剩下的倒數秒數
 
-    int modeID = 2; // 0: 緊急, 1: 閃燈, 2: 正常
-    //讓閃燈模式能按順序變化的秒數
-    double greenLightTime_EW = 15;
-    double yellowLightTime_EW = 3;
-    double allRedLightTime_EW = 1;
-    double greenLightTime_NS = 15;
-    double yellowLightTime_NS = 3;
-    double allRedLightTime_NS = 1;
+    // int modeID = 2; // 0: 緊急, 1: 閃燈, 2: 正常 無用武之地
+    // 讓閃燈模式能按順序變化的秒數
+    int greenLightTime_EW = 15;
+    int yellowLightTime_EW = 3;
+    int allRedLightTime_EW = 1;
+    int greenLightTime_NS = 15;
+    int yellowLightTime_NS = 3;
+    int allRedLightTime_NS = 1;
+
+    // physicalTrafficSignal(){}
 
     public void trafficLightTime(double g_Time_EW, double y_Time_EW, double ar_Time_EW, double g_Time_NS, double y_Time_NS, double ar_Time_NS){
         int countDownSeconds = 3;
-        greenLightTime_EW = g_Time_EW;
-        yellowLightTime_EW = y_Time_EW;
-        allRedLightTime_EW = ar_Time_EW;
-        greenLightTime_NS = g_Time_NS;
-        yellowLightTime_NS = y_Time_NS;
-        allRedLightTime_NS = ar_Time_NS;
-        if(now_Light =={2, 0, 0} || now_Light =={1, 0, 0}){
+        greenLightTime_EW  = (int)g_Time_EW;
+        yellowLightTime_EW = (int)y_Time_EW;
+        allRedLightTime_EW = (int)ar_Time_EW;
+        greenLightTime_NS  = (int)g_Time_NS;
+        yellowLightTime_NS = (int)y_Time_NS;
+        allRedLightTime_NS = (int)ar_Time_NS;
+        if(now_Light == {2, 0, 0} || now_Light == {1, 0, 0}){
             NS_side_ar();
             countDown(3);
-        } else if(modeID == 0 && (now_Light =={0, 0, 1} || now_Light =={0, 0, 2})){
-            countDown(3);
-        } else if(modeID == 0){
-            countDown(seconds + 5);
         } else {
             countDown(seconds);
         }
-        modeID = 2;
+        // modeID = 2;
         while(modeID == 2){
             if(now_Light == {0, 0, 2}){
                 EW_side_g();
-                countDownSeconds = (int)g_Time_EW * 1000;
+                countDownSeconds = (int)g_Time_EW;
             } else if(now_Light == {1, 0, 1}){
                 EW_side_y();
-                countDownSeconds = (int)y_Time_EW * 1000;
+                countDownSeconds = (int)y_Time_EW;
             } else if(now_Light == {2, 0, 1}){
                 EW_side_ar();
-                countDownSeconds = (int)ar_Time_EW * 1000;
+                countDownSeconds = (int)ar_Time_EW;
             } else if(now_Light == {0, 0, 1}){
                 NS_side_g();
-                countDownSeconds = (int)g_Time_NS * 1000;
+                countDownSeconds = (int)g_Time_NS;
             } else if(now_Light == {0, 1, 2}){
                 NS_side_y();
-                countDownSeconds = (int)y_Time_NS * 1000;
+                countDownSeconds = (int)y_Time_NS;
             } else if(now_Light == {0, 2, 2}){
                 NS_side_ar();
-                countDownSeconds = (int)ar_Time_NS * 1000;
+                countDownSeconds = (int)ar_Time_NS;
             }
             countDown(countDownSeconds);
         }
     }
     public void trafficLightFlashing(int right){
-        modeID = 1;
+        // modeID = 1;
         if(right == 1){ //EW路權大
             countDown(seconds);
             if(now_Light == {1, 0, 1}){ //EW綠燈
@@ -141,33 +139,57 @@ public class physicalTrafficSignal {
         }
     }
     public void trafficLightEmergency(int condition){
-        modeID = 0;
+        // modeID = 0;
         if(condition == 1){ //緊急車輛從EW來時
-             if(now_Light == {1, 0, 1}){ //EW是綠燈
+             if(now_Light == {0, 1, 2}){ //NS是綠燈
+                NS_side_y();
+                countDown(3);
+                NS_side_ar();
+                countDown(1);
+                seconds = greenLightTime_EW;
+                EW_side_g();
+            } else if(now_Light == {0, 2, 2}){ //NS是黃燈
+                countDown(seconds);
+                NS_side_ar();
+                countDown(1);
+                seconds = greenLightTime_EW;
                 EW_side_g();
             } else if(now_Light == {2, 0, 0}){ //如果之前是閃燈模式
                 EW_side_f();
             } else if(now_Light == {0, 2, 0}){ //如果之前是閃燈模式
                 NS_side_f();
-            } else { //EW不是綠燈
-                NS_side_y();
-                countDown(3);
-                NS_side_ar();
-                countDown(1);
+            } else { //NS是紅燈
+                if(now_Light == {0, 0, 2}){
+                    seconds = greenLightTime_EW;
+                } else if(now_Light == {2, 0, 1} || now_Light == {0, 0, 1}){
+                    seconds = 5;
+                }
                 EW_side_g();
             }
         } else if(condition == 2){ //緊急車輛從NS來時
-            if(now_Light == {0, 1, 2}){ //NS是綠燈
+            if(now_Light == {1, 0, 1}){ //EW是綠燈
+                EW_side_y();
+                countDown(3);
+                EW_side_ar();
+                countDown(1);
+                seconds = greenLightTime_NS;
+                NS_side_g();
+            } else if(now_Light == {2, 0, 1}){ //EW是黃燈
+                countDown(seconds);
+                EW_side_ar();
+                countDown(1);
+                seconds = greenLightTime_NS;
                 NS_side_g();
             } else if(now_Light == {2, 0, 0}){ //如果之前是閃燈模式
                 EW_side_f();
             } else if(now_Light == {0, 2, 0}){ //如果之前是閃燈模式
                 NS_side_f();
-            } else { //NS不是綠燈
-                EW_side_y();
-                countDown(3);
-                EW_side_ar();
-                countDown(1);
+            } else { //EW是紅燈
+                if(now_Light == {0, 0, 1}){
+                    seconds = greenLightTime_NS;
+                } else if(now_Light == {0, 2, 2} || now_Light == {0, 0, 2}){
+                    seconds = 5;
+                }
                 NS_side_g();
             }
         } else { //兩方：綠燈方3秒黃燈再全紅，黃燈、全紅直接變
@@ -181,13 +203,14 @@ public class physicalTrafficSignal {
                 NS_side_ar();
             } else if(now_Light == {2, 0, 1} || now_Light == {0, 0, 1}){ //EW向黃燈||EW⇒NS紅燈
                 EW_side_ar();
-            } else if(now_Light == {0, 2, 2} || now_Light == {0, 0, 2}){
+            } else if(now_Light == {0, 2, 2} || now_Light == {0, 0, 2}){ //NS向黃燈||NS⇒EW紅燈
                 NS_side_ar();
             } else if(now_Light == {2, 0, 0}){ //如果之前是閃燈模式
                 EW_side_f();
             } else if(now_Light == {0, 2, 0}){ //如果之前是閃燈模式
                 NS_side_f();
             }
+            seconds = 3;
         }
     }
     
