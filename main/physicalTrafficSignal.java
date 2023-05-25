@@ -4,107 +4,233 @@ public class physicalTrafficSignal {
     int[] now_Light = {0, 0, 2};//0: 紅, 1: 綠, 2: 黃，第三個代表現在輪到哪一方，0: 閃燈 1: EW 2: NS，預設2
     int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
     int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
-    // physicalTrafficSignal(){
-        
-    // }
-    int seconds = 0; // 倒數秒數
-    public void trafficLightTime(int beforeMode, double greenLightTime_EW, double yellowLightTime_EW, double redLightTime_EW, double greenLightTime_NS, double yellowLightTime_NS, double redLightTime_NS ){
-        int countDownSeconds = 3;
-        if(beforeMode != 2 && beforeMode != 3){
-            //接不同模板切換需要做的事
 
+    int seconds = 0; // 剩下的倒數秒數
+    //讓閃燈模式能按順序變化的秒數
+    double greenLightTime_EW = 15;
+    double yellowLightTime_EW = 3;
+    double allRedLightTime_EW = 1;
+    double greenLightTime_NS = 15;
+    double yellowLightTime_NS = 3;
+    double allRedLightTime_NS = 1;
+
+    public void trafficLightTime(int beforeMode, double g_Time_EW, double y_Time_EW, double ar_Time_EW, double g_Time_NS, double y_Time_NS, double ar_Time_NS){
+        int countDownSeconds = 3;
+        greenLightTime_EW = g_Time_EW;
+        yellowLightTime_EW = y_Time_EW;
+        allRedLightTime_EW = ar_Time_EW;
+        greenLightTime_NS = g_Time_NS;
+        yellowLightTime_NS = y_Time_NS;
+        allRedLightTime_NS = ar_Time_NS;
+        
+        if(beforeMode == 0 || beforeMode == 1){ //接緊急模式
+            if(now_Light =={2, 0, 0} || now_Light =={1, 0, 0} ){
+                NS_side_ar();
+                countDown(3);
+            } else if(now_Light =={0, 0, 1} || now_Light =={0, 0, 2}){
+                countDown(3);
+            } else{
+                countDown(seconds);
+            }
+        } else { 
+            countDown(seconds);
         }
         
         while(true){ //應該會在controller做//好像不一定
             if(now_Light == {0, 0, 2}){
-                EW_side_Passable_g();
-                countDownSeconds = (int)greenLightTime_EW * 1000;
-            } else if (now_Light == {1, 0, 1}) {
-                EW_side_Passable_y();
-                countDownSeconds = (int)yellowLightTime_EW * 1000;
-            } else if (now_Light == {2, 0, 1}) {
-                EW_side_Passable_ar();
-                countDownSeconds = (int)redLightTime_EW * 1000;
-            } else if (now_Light == {0, 0, 1}) {
-                NS_side_Passable_g();
-                countDownSeconds = (int)greenLightTime_NS * 1000;
-            } else if (now_Light == {0, 1, 2}) {
-                NS_side_Passable_y();
-                countDownSeconds = (int)yellowLightTime_NS * 1000;
-            } else if (now_Light == {0, 2, 2}) {
-                NS_side_Passable_ar();
-                countDownSeconds = (int)redLightTime_NS * 1000;
-            } else {
-                //???
+                EW_side_g();
+                countDownSeconds = (int)g_Time_EW * 1000;
+            } else if(now_Light == {1, 0, 1}){
+                EW_side_y();
+                countDownSeconds = (int)y_Time_EW * 1000;
+            } else if(now_Light == {2, 0, 1}){
+                EW_side_ar();
+                countDownSeconds = (int)ar_Time_EW * 1000;
+            } else if(now_Light == {0, 0, 1}){
+                NS_side_g();
+                countDownSeconds = (int)g_Time_NS * 1000;
+            } else if(now_Light == {0, 1, 2}){
+                NS_side_y();
+                countDownSeconds = (int)y_Time_NS * 1000;
+            } else if(now_Light == {0, 2, 2}){
+                NS_side_ar();
+                countDownSeconds = (int)ar_Time_NS * 1000;
             }
             countDown(countDownSeconds);
         }
     }
-    public int[] EW_side_Passable_g (){
+    public void trafficLightFlashing(int right){
+        if(right == 1){ //EW路權大
+            countDown(seconds);
+            if(now_Light == {1, 0, 1}){ //EW綠燈
+                EW_side_y();
+                countDown(yellowLightTime_EW);
+            } else if(now_Light == {0, 0, 1}){  //EW⇒NS紅燈
+                NS_side_g();
+                countDown(greenLightTime_NS);
+                NS_side_y();
+                countDown(yellowLightTime_NS);
+                NS_side_ar();
+                countDown(allRedLightTime_NS);
+                EW_side_g();
+                countDown(greenLightTime_EW);
+                EW_side_y();
+                countDown(yellowLightTime_EW);
+            } else if(now_Light == {0, 1, 2}){ //NS綠燈
+                NS_side_y();
+                countDown(yellowLightTime_NS);
+                NS_side_ar();
+                countDown(allRedLightTime_NS);
+                EW_side_g();
+                countDown(greenLightTime_EW);
+                EW_side_y();
+                countDown(yellowLightTime_EW);
+            } else if(now_Light == {0, 2, 2}){ //NS黃燈
+                NS_side_ar();
+                countDown(allRedLightTime_NS);
+                EW_side_g();
+                countDown(greenLightTime_EW);
+                EW_side_y();
+                countDown(yellowLightTime_EW);
+            } else if(now_Light == {0, 0, 2}){ //NS⇒EW紅燈
+                EW_side_g();
+                countDown(greenLightTime_EW);
+                EW_side_y();
+                countDown(yellowLightTime_EW);
+            }
+            EW_side_f();
+        } else { //NS路權大
+            countDown(seconds);
+            if(now_Light == {0, 1, 2}){ //NS綠燈 OK
+                NS_side_y();
+                countDown(yellowLightTime_NS);
+            } else if(now_Light == {0, 0, 2}){ //NS⇒EW紅燈
+                EW_side_g();
+                countDown(greenLightTime_EW);
+                EW_side_y();
+                countDown(yellowLightTime_EW);
+                EW_side_ar();
+                countDown(allRedLightTime_EW);
+                NS_side_g();
+                countDown(greenLightTime_NS);
+                NS_side_y();
+                countDown(yellowLightTime_NS);
+            } else if(now_Light == {1, 0, 1}){ //EW綠燈 OK
+                EW_side_y();
+                countDown(yellowLightTime_EW);
+                EW_side_ar();
+                countDown(allRedLightTime_EW);
+                NS_side_g();
+                countDown(greenLightTime_NS);
+                NS_side_y();
+                countDown(yellowLightTime_NS);
+            } else if(now_Light == {0, 2, 1}){ //EW黃燈 ok
+                EW_side_ar();
+                countDown(allRedLightTime_EW);
+                NS_side_g();
+                countDown(greenLightTime_NS);
+                NS_side_y();
+                countDown(yellowLightTime_NS);
+            } else if(now_Light == {0, 0, 1}){  //EW⇒NS紅燈
+                NS_side_g();
+                countDown(greenLightTime_NS);
+                NS_side_y();
+                countDown(yellowLightTime_NS);
+            }
+            NS_side_f();
+        }
+    }
+    public void trafficLightEmergency(int condition){
+        if(condition == 1){ //緊急車輛從EW來時
+             if(now_Light == {1, 0, 1}){ //EW是綠燈
+                EW_side_g();
+            } else if(now_Light == {2, 0, 0}){ //如果之前是閃燈模式
+                EW_side_f();
+            } else if(now_Light == {0, 2, 0}){ //如果之前是閃燈模式
+                NS_side_f();
+            } else { //EW不是綠燈
+                NS_side_y();
+                countDown(3);
+                NS_side_ar();
+                countDown(1);
+                EW_side_g();
+            }
+        } else if(condition == 2){ //緊急車輛從NS來時
+            if(now_Light == {0, 1, 2}){ //NS是綠燈
+                NS_side_g();
+            } else if(now_Light == {2, 0, 0}){ //如果之前是閃燈模式
+                EW_side_f();
+            } else if(now_Light == {0, 2, 0}){ //如果之前是閃燈模式
+                NS_side_f();
+            } else { //NS不是綠燈
+                EW_side_y();
+                countDown(3);
+                EW_side_ar();
+                countDown(1);
+                NS_side_g();
+            }
+        } else { //兩方：綠燈方3秒黃燈再全紅，黃燈、全紅直接變
+            if(now_Light == {1, 0, 1}){ //EW向綠燈
+                EW_side_y();
+                countDown(3);
+                EW_side_ar();
+            } else if(now_Light == {0, 1, 2}){ //NS向綠燈
+                NS_side_y();
+                countDown(3);
+                NS_side_ar();
+            } else if(now_Light == {2, 0, 1} || now_Light == {0, 0, 1}){ //EW向黃燈||EW⇒NS紅燈
+                EW_side_ar();
+            } else if(now_Light == {0, 2, 2} || now_Light == {0, 0, 2}){
+                NS_side_ar();
+            } else if(now_Light == {2, 0, 0}){ //如果之前是閃燈模式
+                EW_side_f();
+            } else if(now_Light == {0, 2, 0}){ //如果之前是閃燈模式
+                NS_side_f();
+            }
+        }
+    }
+    
+    public void EW_side_g(){
         EW_Light = new int[] {1, 0, 0};
         NS_Light = new int[] {0, 0, 1};
         now_Light = new int[] {1, 0, 1};
-        return now_Light;
     }
-    public int[] EW_side_Passable_y(){
+    public void EW_side_y(){
         EW_Light = new int[] {0, 1, 0};
         NS_Light = new int[] {0, 0, 1};
         now_Light = new int[] {2, 0, 1};
-        return now_Light;
     }
-    public int[] EW_side_Passable_ar(){
+    public void EW_side_ar(){
         EW_Light = new int[] {0, 0, 1};
         NS_Light = new int[] {0, 0, 1};
         now_Light = new int[] {0, 0, 1};
-        return now_Light;
     }
-    public int[] NS_side_Passable_g(){
+    public void NS_side_g(){
         EW_Light = new int[] {0, 0, 1};
         NS_Light = new int[] {1, 0, 0};
         now_Light = new int[] {0, 1, 2};
-        return now_Light;
     }
-    public int[] NS_side_Passable_y(){
+    public void NS_side_y(){
         EW_Light = new int[] {0, 0, 1};
         NS_Light = new int[] {0, 1, 0};
         now_Light = new int[] {0, 2, 2};
-        return now_Light;
     }
-    public int[] NS_side_Passable_ar(){
+    public void NS_side_ar(){
         EW_Light = new int[] {0, 0, 1};
         NS_Light = new int[] {0, 0, 1};
         now_Light = new int[] {0, 0, 2};
-        return now_Light;
+    }
+    public void EW_side_f(){
+        EW_Light = new int[] {0, 2, 0};
+        NS_Light = new int[] {0, 0, 2};
+        now_Light = new int[] {2, 0, 0};
+    }
+    public void NS_side_f(){
+        EW_Light = new int[] {0, 0, 2};
+        NS_Light = new int[] {0, 2, 0};
+        now_Light = new int[] {0, 2, 0};
     }
 
-    public int[] trafficLightFlashing(int right){
-        if (right == 1) {
-            EW_Light = new int[] {0, 2, 0};
-            NS_Light = new int[] {0, 0, 2};
-            now_Light = new int[] {2, 0, 0};
-        } else {
-            EW_Light = new int[] {0, 0, 2};
-            NS_Light = new int[] {0, 2, 0};
-            now_Light = new int[] {0, 2, 0};
-        }
-        return now_Light;
-    }
-    public int[] trafficLightEmergency(int condition){
-        if (condition == 1) {
-            EW_Light = new int[] {1, 0, 0};
-            NS_Light = new int[] {0, 0, 1};
-            now_Light = new int[] {1, 0, 1};
-        } else if (condition == 2){
-            EW_Light = new int[] {0, 0, 1};
-            NS_Light = new int[] {1, 0, 0};
-            now_Light = new int[] {0, 1, 2};
-        } else {
-            EW_Light = new int[] {0, 0, 1};
-            NS_Light = new int[] {0, 0, 1};
-            now_Light = new int[] {0, 0, 2};
-        }
-        return now_Light;
-    }
     // changeLightMode 可能會不需要
     public void changeLightMode(int before, int after){
         if((before == 3 && after == 2)||(before == 2 && after == 3)){
@@ -126,17 +252,20 @@ public class physicalTrafficSignal {
 }
 
 public void countDown(int countDownSeconds){
-    for (int i = countDownSeconds; i >= 0; i--) {
+    for (int i = countDownSeconds; i >= 0; i--){
         seconds = countDownSeconds;
         try {
             Thread.sleep(1000); // 暫停 1 秒
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e){
             e.printStackTrace();
         }
     }
 }
 public void getSecond(){
     return seconds;
+}
+public int[] now_Light(){
+    return now_Light;
 }
 /*
  * 當EW_side=1 東西向通行
