@@ -85,7 +85,8 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
                         break;
                 }
             }
-            tL = new trafficLight(mode.changeMode());
+            // tL = new trafficLight(mode.changeMode());
+            pTS.setCP(mode.chandeMode());
         }
 
     }

@@ -1,6 +1,7 @@
 package main;
 
 public class physicalTrafficSignal {
+    public changedParameter cP;
     int[] now_Light = {0, 0, 2};//0: 紅, 1: 綠, 2: 黃，now_Light[2]代表現在輪到哪一方，0: 閃燈, 1: EW, 2: NS，預設2
     int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
     int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
@@ -15,9 +16,12 @@ public class physicalTrafficSignal {
     int greenLightTime_NS = 15;
     int yellowLightTime_NS = 3;
     int allRedLightTime_NS = 1;
-
+    public void setCP(changedParameter cP){
+        this.cP = cP;
+    }
     // physicalTrafficSignal(){}
 
+    //trafficLightTime的參數會存在cP裡，直接從cP拿
     public void trafficLightTime(double g_Time_EW, double y_Time_EW, double ar_Time_EW, double g_Time_NS, double y_Time_NS, double ar_Time_NS){
         int countDownSeconds = 3;
         greenLightTime_EW  = (int)g_Time_EW;
@@ -33,7 +37,7 @@ public class physicalTrafficSignal {
             countDown(seconds);
         }
         // modeID = 2;
-        while(modeID == 2){
+        while(true){
             if(now_Light == {0, 0, 2}){
                 EW_side_g();
                 countDownSeconds = (int)g_Time_EW;
@@ -58,8 +62,8 @@ public class physicalTrafficSignal {
     }
     public void trafficLightFlashing(int right){
         // modeID = 1;
+        countDown(seconds);
         if(right == 1){ //EW路權大
-            countDown(seconds);
             if(now_Light == {1, 0, 1}){ //EW綠燈
                 EW_side_y();
                 countDown(yellowLightTime_EW);
@@ -98,7 +102,6 @@ public class physicalTrafficSignal {
             }
             EW_side_f();
         } else { //NS路權大
-            countDown(seconds);
             if(now_Light == {0, 1, 2}){ //NS綠燈 OK
                 NS_side_y();
                 countDown(yellowLightTime_NS);
@@ -138,6 +141,7 @@ public class physicalTrafficSignal {
             NS_side_f();
         }
     }
+    //condition在cP裡判定，直接呼叫cP的condition
     public void trafficLightEmergency(int condition){
         // modeID = 0;
         if(condition == 1){ //緊急車輛從EW來時
