@@ -6,6 +6,8 @@ public class physicalTrafficSignal {
     int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
 
     int seconds = 0; // 剩下的倒數秒數
+
+    int modeID = 2; // 0: 緊急, 1: 閃燈, 2: 正常
     //讓閃燈模式能按順序變化的秒數
     double greenLightTime_EW = 15;
     double yellowLightTime_EW = 3;
@@ -14,7 +16,7 @@ public class physicalTrafficSignal {
     double yellowLightTime_NS = 3;
     double allRedLightTime_NS = 1;
 
-    public void trafficLightTime(int beforeMode, double g_Time_EW, double y_Time_EW, double ar_Time_EW, double g_Time_NS, double y_Time_NS, double ar_Time_NS){
+    public void trafficLightTime(double g_Time_EW, double y_Time_EW, double ar_Time_EW, double g_Time_NS, double y_Time_NS, double ar_Time_NS){
         int countDownSeconds = 3;
         greenLightTime_EW = g_Time_EW;
         yellowLightTime_EW = y_Time_EW;
@@ -22,21 +24,18 @@ public class physicalTrafficSignal {
         greenLightTime_NS = g_Time_NS;
         yellowLightTime_NS = y_Time_NS;
         allRedLightTime_NS = ar_Time_NS;
-        
-        if(beforeMode == 0 || beforeMode == 1){ //接緊急模式
-            if(now_Light =={2, 0, 0} || now_Light =={1, 0, 0} ){
-                NS_side_ar();
-                countDown(3);
-            } else if(now_Light =={0, 0, 1} || now_Light =={0, 0, 2}){
-                countDown(3);
-            } else{
-                countDown(seconds);
-            }
-        } else { 
+        if(now_Light =={2, 0, 0} || now_Light =={1, 0, 0}){
+            NS_side_ar();
+            countDown(3);
+        } else if(modeID == 0 && (now_Light =={0, 0, 1} || now_Light =={0, 0, 2})){
+            countDown(3);
+        } else if(modeID == 0){
+            countDown(seconds + 5);
+        } else {
             countDown(seconds);
         }
-        
-        while(true){ //應該會在controller做//好像不一定
+        modeID = 2;
+        while(true){
             if(now_Light == {0, 0, 2}){
                 EW_side_g();
                 countDownSeconds = (int)g_Time_EW * 1000;
@@ -60,6 +59,7 @@ public class physicalTrafficSignal {
         }
     }
     public void trafficLightFlashing(int right){
+        modeID = 1;
         if(right == 1){ //EW路權大
             countDown(seconds);
             if(now_Light == {1, 0, 1}){ //EW綠燈
@@ -141,6 +141,7 @@ public class physicalTrafficSignal {
         }
     }
     public void trafficLightEmergency(int condition){
+        modeID = 0;
         if(condition == 1){ //緊急車輛從EW來時
              if(now_Light == {1, 0, 1}){ //EW是綠燈
                 EW_side_g();
@@ -231,42 +232,24 @@ public class physicalTrafficSignal {
         now_Light = new int[] {0, 2, 0};
     }
 
-    // changeLightMode 可能會不需要
-    public void changeLightMode(int before, int after){
-        if((before == 3 && after == 2)||(before == 2 && after == 3)){
-            //直接改變秒數
-        } else if((before == 3 && after == 1)||(before == 2 && after == 1)||(before == 0 && after == 1)){
-            //路權大的那一方黃燈時改變
-        } else if((before == 3 && after == 0)||(before == 2 && after == 0)){
-            //兩方：綠燈方黃燈再全紅
-            //緊急車輛方為綠燈：直接更改
-            //緊急車輛方為紅燈：對向車道進入黃燈時間，緊急向車道再切換成綠燈
-        } else if((before == 1 && after == 3)||(before == 0 && after == 3)){
-            //全紅三秒後，套用計算好的秒數，依序顯示(直接切換)
-        } else if((before == 1 && after == 2)||(before == 0 && after == 3)){
-            //全紅三秒後，回歸基礎，依序顯示(直接切換)
-        } else {
-            //不切換
+    public void countDown(int countDownSeconds){
+        for (int i = countDownSeconds; i >= 0; i--){
+            seconds = countDownSeconds;
+            try {
+                Thread.sleep(1000); // 暫停 1 秒
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
         }
+    }
+    public void getSecond(){
+        return seconds;
+    }
+    public int[] now_Light(){
+        return now_Light;
     }
 }
 
-public void countDown(int countDownSeconds){
-    for (int i = countDownSeconds; i >= 0; i--){
-        seconds = countDownSeconds;
-        try {
-            Thread.sleep(1000); // 暫停 1 秒
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }
-    }
-}
-public void getSecond(){
-    return seconds;
-}
-public int[] now_Light(){
-    return now_Light;
-}
 /*
  * 當EW_side=1 東西向通行
  * EW_g_light<=1 NS_r_light<=1 EW綠燈 NS紅燈
@@ -313,3 +296,21 @@ public int[] now_Light(){
 //暴力解法1: trafficLightTime多一個參數控制全紅/黃2燈時間，while(true){...}之前先透過這個參數判定要不要跑3秒
 //暴力解法2: 多一個trafficLightTime，裡面多一個參數控制全紅/黃2燈時間
 //暴力解法3: changeLightMode套用模板之前先跑3秒
+/* public void changeLightMode(int before, int after){
+ *    if((before == 3 && after == 2)||(before == 2 && after == 3)){
+ *         //直接改變秒數
+ *     } else if((before == 3 && after == 1)||(before == 2 && after == 1)||(before == 0 && after == 1)){
+ *         //路權大的那一方黃燈時改變
+ *     } else if((before == 3 && after == 0)||(before == 2 && after == 0)){
+ *         //兩方：綠燈方黃燈再全紅
+ *         //緊急車輛方為綠燈：直接更改
+ *         //緊急車輛方為紅燈：對向車道進入黃燈時間，緊急向車道再切換成綠燈
+ *     } else if((before == 1 && after == 3)||(before == 0 && after == 3)){
+ *         //全紅三秒後，套用計算好的秒數，依序顯示(直接切換)
+ *     } else if((before == 1 && after == 2)||(before == 0 && after == 3)){
+ *         //全紅三秒後，回歸基礎，依序顯示(直接切換)
+ *     } else {
+ *         //不切換
+ *     }
+ * }
+ */
