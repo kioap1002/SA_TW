@@ -1,29 +1,43 @@
 package main;
 
 public class physicalTrafficSignal {
-    int[] now_Light = {0, 0, 0};//0: 紅, 1: 綠, 2: 黃，第三個代表現在輪到哪一方，0: 閃燈 1: EW 2: NS
+    int[] now_Light = {0, 0, 2};//0: 紅, 1: 綠, 2: 黃，第三個代表現在輪到哪一方，0: 閃燈 1: EW 2: NS，預設2
     int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
     int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
     // physicalTrafficSignal(){
         
     // }
     int seconds = 0; // 倒數秒數
-    public void trafficLightTime(double greenLightTime_EW, double yellowLightTime, double greenLightTime_NS, double redLightTime ){
-        while(true){ //應該會在controller做
-            //secend_now = System.currentTimeMillis() / 1000;
-            //切換成東西向綠燈
-            EW_side_Passable_g();
-            countDown((int)greenLightTime_EW * 1000); // EW綠燈時間
-            EW_side_Passable_y();
-            countDown((int)yellowLightTime * 1000); // 黃燈時間
-            EW_side_Passable_ar();
-            countDown((int)redLightTime * 1000); //全紅時間
-            NS_side_Passable_g();
-            countDown((int)greenLightTime_NS * 1000); // NS綠燈時間
-            NS_side_Passable_y();
-            countDown((int)yellowLightTime * 1000); // 黃燈時間
-            NS_side_Passable_ar();
-            countDown((int)redLightTime * 1000); //全紅時間
+    public void trafficLightTime(int beforeMode, double greenLightTime_EW, double yellowLightTime_EW, double redLightTime_EW, double greenLightTime_NS, double yellowLightTime_NS, double redLightTime_NS ){
+        int countDownSeconds = 3;
+        if(beforeMode != 2 && beforeMode != 3){
+            //接不同模板切換需要做的事
+
+        }
+        
+        while(true){ //應該會在controller做//好像不一定
+            if(now_Light == {0, 0, 2}){
+                EW_side_Passable_g();
+                countDownSeconds = (int)greenLightTime_EW * 1000;
+            } else if (now_Light == {1, 0, 1}) {
+                EW_side_Passable_y();
+                countDownSeconds = (int)yellowLightTime_EW * 1000;
+            } else if (now_Light == {2, 0, 1}) {
+                EW_side_Passable_ar();
+                countDownSeconds = (int)redLightTime_EW * 1000;
+            } else if (now_Light == {0, 0, 1}) {
+                NS_side_Passable_g();
+                countDownSeconds = (int)greenLightTime_NS * 1000;
+            } else if (now_Light == {0, 1, 2}) {
+                NS_side_Passable_y();
+                countDownSeconds = (int)yellowLightTime_NS * 1000;
+            } else if (now_Light == {0, 2, 2}) {
+                NS_side_Passable_ar();
+                countDownSeconds = (int)redLightTime_NS * 1000;
+            } else {
+                //???
+            }
+            countDown(countDownSeconds);
         }
     }
     public int[] EW_side_Passable_g (){
@@ -62,6 +76,7 @@ public class physicalTrafficSignal {
         now_Light = new int[] {0, 0, 2};
         return now_Light;
     }
+
     public int[] trafficLightFlashing(int right){
         if (right == 1) {
             EW_Light = new int[] {0, 2, 0};
@@ -90,6 +105,7 @@ public class physicalTrafficSignal {
         }
         return now_Light;
     }
+    // changeLightMode 可能會不需要
     public void changeLightMode(int before, int after){
         if((before == 3 && after == 2)||(before == 2 && after == 3)){
             //直接改變秒數
