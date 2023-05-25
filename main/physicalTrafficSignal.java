@@ -1,35 +1,14 @@
 package main;
 
 public class physicalTrafficSignal {
-<<<<<<< Updated upstream
-    public changedParameter cP;
-    int[] now_Light = {0, 0, 2};//0: 紅, 1: 綠, 2: 黃，now_Light[2]代表現在輪到哪一方，0: 閃燈, 1: EW, 2: NS，預設2
-    int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
-    int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
-=======
     private int[] now_Light = {0, 0, 2};//0: 紅, 1: 綠, 2: 黃，now_Light[2]代表現在輪到哪一方，0: 閃燈, 1: EW, 2: NS，預設2
     private int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
     private int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
->>>>>>> Stashed changes
 
     protected int seconds = 0; // 剩下的倒數秒數
 
     // int modeID = 2; // 0: 緊急, 1: 閃燈, 2: 正常 無用武之地
     // 讓閃燈模式能按順序變化的秒數
-<<<<<<< Updated upstream
-    int greenLightTime_EW = 15;
-    int yellowLightTime_EW = 3;
-    int allRedLightTime_EW = 1;
-    int greenLightTime_NS = 15;
-    int yellowLightTime_NS = 3;
-    int allRedLightTime_NS = 1;
-    public void setCP(changedParameter cP){
-        this.cP = cP;
-    }
-    // physicalTrafficSignal(){}
-
-    //trafficLightTime的參數會存在cP裡，直接從cP拿
-=======
     private int greenLightTime_EW = 15;
     private int yellowLightTime_EW = 3;
     private int allRedLightTime_EW = 1;
@@ -43,7 +22,7 @@ public class physicalTrafficSignal {
     public void setcP(changedParameter cP){
         this.cP = cP;
     }
->>>>>>> Stashed changes
+    //trafficLightTime的參數會存在cP裡，直接從cP拿
     public void trafficLightTime(double g_Time_EW, double y_Time_EW, double ar_Time_EW, double g_Time_NS, double y_Time_NS, double ar_Time_NS){
         
         this.countDownSeconds = 3;
@@ -63,11 +42,7 @@ public class physicalTrafficSignal {
         
         // modeID = 2;
         while(true){
-<<<<<<< Updated upstream
-            if(now_Light == {0, 0, 2}){
-=======
             if(now_Light.equals(new int[]{0, 0, 2})){
->>>>>>> Stashed changes
                 EW_side_g();
                 countDownSeconds = (int)g_Time_EW;
             } else if(now_Light.equals(new int[]{1, 0, 1})){
@@ -91,16 +66,9 @@ public class physicalTrafficSignal {
     }
     public void trafficLightFlashing(int right){
         // modeID = 1;
-<<<<<<< Updated upstream
         countDown(seconds);
         if(right == 1){ //EW路權大
-            if(now_Light == {1, 0, 1}){ //EW綠燈
-=======
-
-        if(right == 1){ //EW路權大
-            countDown(seconds);
             if(now_Light.equals(new int[]{1, 0, 1})){ //EW綠燈
->>>>>>> Stashed changes
                 EW_side_y();
                 countDown(yellowLightTime_EW);
             } else if(now_Light.equals(new int[]{0, 0, 1})){  //EW⇒NS紅燈
@@ -138,12 +106,7 @@ public class physicalTrafficSignal {
             }
             EW_side_f();
         } else { //NS路權大
-<<<<<<< Updated upstream
-            if(now_Light == {0, 1, 2}){ //NS綠燈 OK
-=======
-            countDown(seconds);
             if(now_Light.equals(new int[]{0, 1, 2})){ //NS綠燈 OK
->>>>>>> Stashed changes
                 NS_side_y();
                 countDown(yellowLightTime_NS);
             } else if(now_Light.equals(new int[]{0, 0, 2})){ //NS⇒EW紅燈
