@@ -35,7 +35,7 @@ public class physicalTrafficSignal {
             countDown(seconds);
         }
         modeID = 2;
-        while(true){
+        while(modeID == 2){
             if(now_Light == {0, 0, 2}){
                 EW_side_g();
                 countDownSeconds = (int)g_Time_EW * 1000;
