@@ -85,13 +85,8 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
                         break;
                 }
             }
-<<<<<<< Updated upstream
-            // tL = new trafficLight(mode.changeMode());
-            pTS.setCP(mode.chandeMode());
-=======
             tL = new trafficLight(mode.changeMode());
             pTS.setcP(mode.changeMode());
->>>>>>> Stashed changes
         }
 
     }
