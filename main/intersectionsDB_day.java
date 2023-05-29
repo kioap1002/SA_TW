@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
-
-
 public class intersectionsDB_day {
     private double density;
     List <roadSituation> intersectionData_EW = new ArrayList<roadSituation>();
