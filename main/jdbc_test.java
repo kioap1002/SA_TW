@@ -1,3 +1,4 @@
+package main;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,9 +16,9 @@ public class jdbc_test {
     private static final String URL = "jdbc:mysql://localhost:3306/DTCS_DB";
     private static final String USERNAME = "dtcs";
     private static final String PASSWORD = "dtcsdb6253";
-    
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        Connection conn = null;
+    private jdbc_api api;
+    private static void  connect(boolean tf) throws FileNotFoundException, IOException {
+    Connection conn = null;
         try {
             // 連接到資料庫
             conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -27,6 +28,7 @@ public class jdbc_test {
             String img_path = "path/to/your/file.jpg";
             File file = new File(img_path);
             // insertBlob(conn, "photos", "photo_id", file);
+            api.excute(tf);
             insertData_ew_s(conn, "photos", "photo", file, 1, 3.14);
             // 檢索並顯示Blob檔案
             retrieveBlob(conn, "photos", "photo_id");
@@ -42,7 +44,6 @@ public class jdbc_test {
                 }
             }
         }
-        
     }
 
     private static void createTables(Connection conn) throws SQLException {
@@ -91,7 +92,7 @@ public class jdbc_test {
         
     }
 
-    private static void insertData_ew_s(Connection conn, String intersectionID, Time time, boolean EV, double density, File file) throws SQLException, FileNotFoundException, IOException {
+    protected static void insertData_ew_s(/*Connection conn,*/ String intersectionID, Time time, boolean EV, double density, File file) throws SQLException, FileNotFoundException, IOException {
         String insertQuery = "INSERT INTO trafficflowdata_ew_s (Road_Intersection_ID, Time, Emergency_Vehicle, Density, photo) VALUES (?, ?, ?, ?, ?)";  //=>data_int, data_double : 欄位名稱
         PreparedStatement pstmt = conn.prepareStatement(insertQuery);
         // String createTrafficFlowData_s_ewTableQuery = "CREATE TABLE IF NOT EXISTS trafficflowdata_ew_s ("
@@ -113,7 +114,7 @@ public class jdbc_test {
             pstmt.executeUpdate();
         }
     }
-    private static void insertData_ns_s(Connection conn, String intersectionID, Time time, boolean EV, double density, File file) throws SQLException, FileNotFoundException, IOException {
+    protected static void insertData_ns_s(/*Connection conn,*/ String intersectionID, Time time, boolean EV, double density, File file) throws SQLException, FileNotFoundException, IOException {
         String insertQuery = "INSERT INTO trafficflowdata_ns_s (Road_Intersection_ID, Time, Emergency_Vehicle, Density, photo) VALUES (?, ?, ?, ?, ?)";  //=>data_int, data_double : 欄位名稱
         PreparedStatement pstmt = conn.prepareStatement(insertQuery);
         
@@ -126,7 +127,7 @@ public class jdbc_test {
             pstmt.executeUpdate();
         }
     }
-    private static void insertData_d(Connection conn, String intersectionID, Date date, double density) throws SQLException, FileNotFoundException, IOException {
+    protected static void insertData_d(String intersectionID, Date date, double density) throws SQLException, FileNotFoundException, IOException {
         String insertQuery = "INSERT INTO trafficflowdata_d (Road_Intersection_ID, Date, Density_avg) VALUES (?, ?, ?)";  //=>data_int, data_double : 欄位名稱
         PreparedStatement pstmt = conn.prepareStatement(insertQuery);
         
@@ -145,7 +146,7 @@ public class jdbc_test {
         
     }
 
-    private static void retrieveBlob(Connection conn, String tableName, String columnName) throws SQLException {
+    protected static void retrieveBlob(/*Connection conn,*/ String tableName, String columnName) throws SQLException {
         String selectQuery = "SELECT " + columnName + " FROM " + tableName;
         ResultSet rs = conn.createStatement().executeQuery(selectQuery);
 
@@ -158,8 +159,8 @@ public class jdbc_test {
     }
 
     //找路權
-    private static boolean retrieveRoadRight(Connection conn, String column, String valueA) throws SQLException {
-        String selectQuery = "SELECT " + column + " FROM intersection_static WHERE Road_Intersection_ID = ? LIMIT 1";
+    protected static boolean retrieveRoadRight(/*Connection conn,*/ String column, String valueA) throws SQLException {
+        String selectQuery = "SELECT " + column + " FROM intersection_static WHERE Intersection_Name = ? LIMIT 1";
         PreparedStatement pstmt = conn.prepareStatement(selectQuery);
         pstmt.setString(1, valueA);
         //value = intersectionID
@@ -182,7 +183,7 @@ public class jdbc_test {
 
 
     //限定資料筆數=>limit=30
-    private static double retrieveDensity_30_avg(Connection conn, String columnA, String columnB) throws SQLException {
+    protected double retrieveDensity_30_avg(/*Connection conn,*/ String columnA, String columnB) throws SQLException {
         String selectQuery = "SELECT Density_avg FROM trafficflowdata_d ORDER BY Date DESC LIMIT 30";
         //columnB=密度，columnA=日期，tableName=日資料庫，DESC=由大到小排序
         PreparedStatement pstmt = conn.prepareStatement(selectQuery);
@@ -196,6 +197,57 @@ public class jdbc_test {
         rs.close();
         pstmt.close();
         return sum;
+    }
+    protected double retrieveDensity_d_avg(/*Connection conn,*/ String tablename) throws SQLException {
+        String selectQuery = "SELECT Density FROM "+ tablename ;
+        //columnB=密度，columnA=日期，tableName=日資料庫，DESC=由大到小排序
+        PreparedStatement pstmt = conn.prepareStatement(selectQuery);
+        // pstmt.setInt(1, limit);
+        ResultSet rs = pstmt.executeQuery();
+        double sum = 0;
+        double count = 0;
+        while (rs.next()) {
+            double valueB = rs.getDouble("Density");
+            sum += valueB;
+            count++;
+        }
+        rs.close();
+        pstmt.close();
+        return sum/count;
+    }
+    private String retrieveInterID(Connection conn, String name) throws SQLException {
+        String selectQuery = "SELECT Road_Intersection_ID FROM intersection_static WHERE Intersection_Name = ? LIMIT 1";
+        PreparedStatement pstmt = conn.prepareStatement(selectQuery);
+        pstmt.setString(1, name);
+        ResultSet rs = pstmt.executeQuery();
+        String id="";
+        while (rs.next()) {
+            id = rs.getString("Road_Intersection_ID");
+        }
+        rs.close();
+        pstmt.close();
+        return id;
+    }
+
+    protected String getInterID(String str){
+        Connection conn = null;
+        String id="";
+        try {
+            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            id = retrieveInterID(conn, "intersection");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // 關閉資源
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return id;
     }
 }
 

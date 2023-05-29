@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Date;
 import java.time.*;
+
+// import jdbc_test.*;
+
 public class controller {  //有手動跟自動的模式，loop控制更新資料庫 & 更改模板
     private double Last30DaysDensity_EW;
     private double Last30DaysDensity_NS;
@@ -31,6 +34,8 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
     private Mode mode;
     private physicalTrafficSignal pTS = new physicalTrafficSignal();
     
+    private jdbc_test jdbc;
+    private String intersectionID = jdbc.getInterID("intersection");
     //需要有地方取得路口資訊
     // pTS.EW_side_Passable_g();
     while(true){
@@ -38,9 +43,18 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
         if(tomarrow - today == 1){
             //換日，處理今日資料
             LocalDate day = LocalDate.now();
+            private double density_avg = (jdbc.retrieveDensity_d_avg("trafficflowdata_ew_s") + jdbc.retrieveDensity_d_avg("trafficflowdata_ns_s"))/2
+            jdbc.insertData_d(intersectionID, day, density_avg);
             //LD=> 0:EW, 1:NS
+
+            //換日為啥要丟roadSituation???????????????????????????????????????????
+
+
             roadSituation todayRS_EW = new roadSituation(day, false, iDb.calculateTodayVehicleAmountAverage(false), iDb.calculateTodayEmergencyVehicleCount(false), iDb.calculateTodayDensityAverage(false));
+            // jdbc_test.insertData_ew_s(intersectionID, camera_EW.time, todayRS_EW.getEmergencyVehicle(), todayRS_EW.getDensity(), camera_EW.shootIntersections());//插入秒資料
             roadSituation todayRS_NS = new roadSituation(day, true, iDb.calculateTodayVehicleAmountAverage(true), iDb.calculateTodayEmergencyVehicleCount(true), iDb.calculateTodayDensityAverage(true));
+            // jdbc_test.insertData_ew_s(intersectionID, camera_EW.time, todayRS_NS.getEmergencyVehicle(), todayRS_NS.getDensity(), camera_NS.shootIntersections());//插入秒資料
+            
             iDb_d.addIntersectionData(todayRS_EW, todayRS_NS);
             // 清空資料庫，重製時間
             iDb = new intersectionsDB();
