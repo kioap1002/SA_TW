@@ -6,8 +6,8 @@ public class physicalTrafficSignal {
     private int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
 
     protected int seconds = 0; // 剩下的倒數秒數
+    protected int mode_N = 2;//0: 緊急 1: 有閃 2: 正常(高密度&普通)
 
-    // int modeID = 2; // 0: 緊急, 1: 閃燈, 2: 正常 無用武之地
     // 讓閃燈模式能按順序變化的秒數
     private int greenLightTime_EW = 15;
     private int yellowLightTime_EW = 3;
@@ -21,6 +21,7 @@ public class physicalTrafficSignal {
     private changedParameter cP;
     public void setcP(changedParameter cP){
         this.cP = cP;
+
     }
     //trafficLightTime的參數會存在cP裡，直接從cP拿
     public void trafficLightTime(double g_Time_EW, double y_Time_EW, double ar_Time_EW, double g_Time_NS, double y_Time_NS, double ar_Time_NS){
@@ -40,7 +41,7 @@ public class physicalTrafficSignal {
             countDown(seconds);
         }
         
-        // modeID = 2;
+        mode_N = 2;
         while(true){
             if(now_Light.equals(new int[]{0, 0, 2})){
                 EW_side_g();
@@ -65,7 +66,7 @@ public class physicalTrafficSignal {
         }
     }
     public void trafficLightFlashing(int right){
-        // modeID = 1;
+        mode_N = 1;
         countDown(seconds);
         if(right == 1){ //EW路權大
             if(now_Light.equals(new int[]{1, 0, 1})){ //EW綠燈
@@ -147,7 +148,7 @@ public class physicalTrafficSignal {
     }
     //condition在cP裡判定，直接呼叫cP的condition
     public void trafficLightEmergency(int condition){
-        // modeID = 0;
+        mode_N = 0;
         if(condition == 1){ //緊急車輛從EW來時
              if(now_Light.equals(new int[]{0, 1, 2})){ //NS是綠燈
                 NS_side_y();
@@ -276,7 +277,7 @@ public class physicalTrafficSignal {
     public int getSecond(){
         return seconds;
     }
-    public int[] now_Light(){
+    public int[] getNow_Light(){
         return now_Light;
     }
 }
