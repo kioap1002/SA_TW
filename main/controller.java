@@ -31,11 +31,11 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
     private intersectionsDB_day iDb_d = new intersectionsDB_day();
     private east_westDetectCamera camera_EW;
     private north_southDetectCamera camera_NS;
-    private trafficLight tL;  //用來傳我們要更改的Mode進去  //parameter
+    //private trafficLight tL;  //用來傳我們要更改的Mode進去  //parameter//沒用ㄉ東西
     private roadSituation_sum road_sum;
 
     private Mode mode;
-    private physicalTrafficSignal pTS = new physicalTrafficSignal();
+    private physicalTrafficSignal pTS = new physicalTrafficSignal();//用來傳我們要更改的Mode進去  //parameter
     
     private jdbc_test jdbc;
     private String intersectionID = jdbc.getInterID("intersection");
@@ -123,10 +123,9 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
                         break;
                 }
             }
-            tL = new trafficLight(mode.changeMode());
+            //tL = new trafficLight(mode.changeMode());
             pTS.setcP(mode.changeMode());
         }
 
     }
-
 }
