@@ -1,6 +1,7 @@
 package main;
 import java.time.LocalDate;
 import java.util.Date;
+//Data Coupling
 //單純用來放置資料的物件
 public class roadSituation {
     private Date time;

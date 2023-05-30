@@ -222,7 +222,27 @@ public class physicalTrafficSignal {
             seconds = 3;
         }
     }
-    
+    public void trafficLightManual(int timer, int con){
+        switch(con){
+            case 0://一直綠燈(輸入方向)
+                private int lD getDirection();//get direction
+                if (lD == 0){
+                    EW_side_g();
+                }else{
+                    NS_side_g();
+                }
+                countDown(timer);
+                break;
+            case 1://閃燈，從路權拿
+                //flashing, countdown
+                break;
+            case 2://正常(輸入秒數)
+                //change traffic light time, countdown
+                break;    
+        }
+        // 一直綠燈、閃燈、正常
+    }
+
     public void EW_side_g(){
         EW_Light = new int[] {1, 0, 0};
         NS_Light = new int[] {0, 0, 1};

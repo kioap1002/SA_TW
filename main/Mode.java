@@ -21,23 +21,11 @@ class emergencyMode extends Mode{
     }
     public changedParameter changeMode(){
         changedParameter cP = new changedParameter();
-        switch (EV) {
-            case 3: //both EV //全紅    
-                cP.setParameter(3, 3, 3, 0);
-                break;
-            case 2://NS EV
-                cP.setParameter(2, 2, 2, 0);
-                break;
-            case 1://EW EV
-                cP.setParameter(1, 1, 1, 0);
-                break;
-            default://something wrong
-                System.out.println("wrong message");
-                break;
-        }
+        cP = new changedParameter(EV,0);
         return cP;
     }
 }
+
 class HighDensityMode extends Mode{
     private int D;
     private double EW_dF;
@@ -64,7 +52,7 @@ class BasicDensityMode extends Mode{
         //拿到該路口的defalt
         changedParameter cP = new changedParameter();
         //light time == 0 => defalt
-        cP.setParameter(0, 0, 0, 0);
+        cP = new changedParameter(0,0);
         return cP;
     }
 }
@@ -83,7 +71,7 @@ class LowDensityMode extends Mode{
         if(EW_right < NS_right){
             fla = 2;
         }
-        cP.setParameter(0, 0, 0, fla);
+        cP = new changedParameter(0, fla);
         return cP;
     }
 }
