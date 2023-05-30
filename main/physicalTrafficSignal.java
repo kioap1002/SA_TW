@@ -1,7 +1,7 @@
 package main;
 
 public class physicalTrafficSignal {
-    private int[] now_Light = {0, 0, 2};//0: 紅, 1: 綠, 2: 黃，now_Light[2]代表現在輪到哪一方，0: 閃燈, 1: EW, 2: NS，預設2
+    protected int[] now_Light = {0, 0, 2};//[1]EW, [2]NS, 0: 紅, 1: 綠, 2: 黃，[2]代表現在輪到哪一方，0: 閃燈, 1: EW, 2: NS，預設2
     private int[] EW_Light = {0, 0, 0}; //綠, 黃, 紅 //綠: 0, 1 黃: 0, 1, 2 紅: 0, 1, 2 //0: 沒亮 1: 有亮 2: 閃燈
     private int[] NS_Light = {0, 0, 0}; //綠, 黃, 紅
 
