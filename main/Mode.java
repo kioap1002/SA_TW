@@ -1,23 +1,14 @@
 package main;
 
-public abstract class Mode{ //回傳已經計算完的秒數
-    // int modeID = 2;// 0: 緊急 1: 低 2: 基礎 3: 高
+public abstract class Mode{ //傳給cp已經算完的秒數
     public abstract changedParameter changeMode();
-    // public int getModeID(){
-    //     return modeID;
-    // }
 }
 
 class emergencyMode extends Mode{
     private int EV;
-    // private int D;
-    // emergencyMode(int EV, int D){
-    //     this.EV = EV;
-    //     this.D = D;
-    // }
+
     emergencyMode(int EV){
         this.EV = EV;
-        //this.modeID = 0;
     }
     public changedParameter changeMode(){
         changedParameter cP = new changedParameter();
@@ -28,15 +19,18 @@ class emergencyMode extends Mode{
 
 class HighDensityMode extends Mode{
     private int D;
-    private double EW_dF;
-    private double NS_dF;
-    HighDensityMode(int D, double EW_dF, double NS_dF){
+    private double density_EW;
+    private double density_NS;
+    HighDensityMode(int D, double EW_d, double NS_d){
         this.D = D;
-        this.EW_dF = EW_dF;
-        this.NS_dF = NS_dF;
-        //this.modeID = 3;
+        this.density_EW = EW_d;
+        this.density_NS = NS_d;
     }
-    public double calculateGreenLightSeconds(double density){
+    public double calculateGreenLightSeconds(){
+
+
+
+        
         return 0.0;
     }
     public changedParameter changeMode(){
@@ -45,14 +39,13 @@ class HighDensityMode extends Mode{
     }
 }
 class BasicDensityMode extends Mode{
-    BasicDensityMode(){
-        //this.modeID = 2;
+    int[] lightTime;
+    BasicDensityMode(int[] lT /*從資料庫取得的預設秒數 */){
+        lightTime = lT;
     }
     public changedParameter changeMode(){
-        //拿到該路口的defalt
         changedParameter cP = new changedParameter();
-        //light time == 0 => defalt
-        cP = new changedParameter(0,0);
+        cP = new changedParameter(0, 0, lightTime);
         return cP;
     }
 }
@@ -62,7 +55,6 @@ class LowDensityMode extends Mode{
     LowDensityMode(int EW, int NS){
         EW_right = EW;
         NS_right = NS;
-        //this.modeID = 1;
     }
     public changedParameter changeMode(){
         changedParameter cP = new changedParameter();
