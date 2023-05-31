@@ -29,7 +29,6 @@ class HighDensityMode extends Mode{
         calculateGreenLightSeconds();
     }
     public void calculateGreenLightSeconds(){
-
         switch (D) {
             case 0://both
                 lightTime[0] = lightTime[0] + (int)(density_EW * 10);

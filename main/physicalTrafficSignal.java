@@ -21,23 +21,30 @@ public class physicalTrafficSignal {
     private changedParameter cP;
     public void setcP(changedParameter cP){
         this.cP = cP;
-
+        if(cP.right == 0 && cP.condition == 0){
+            trafficLightTime();
+        }else if(cP.condition != 0){
+            trafficLightEmergency(cP.condition);
+        }else{
+            trafficLightFlashing(cP.right);
+        }
     }
     //trafficLightTime的參數會存在cP裡，直接從cP拿
-    public void trafficLightTime(double g_Time_EW, double y_Time_EW, double ar_Time_EW, double g_Time_NS, double y_Time_NS, double ar_Time_NS){
+    public void trafficLightTime(){
         
         this.countDownSeconds = 3;
-        this.greenLightTime_EW  = (int)g_Time_EW;
-        yellowLightTime_EW = (int)y_Time_EW;
-        allRedLightTime_EW = (int)ar_Time_EW;
-        greenLightTime_NS  = (int)g_Time_NS;
-        yellowLightTime_NS = (int)y_Time_NS;
-        allRedLightTime_NS = (int)ar_Time_NS;
+
+        this.greenLightTime_EW  = cP.greenLightTime_EW;
+        this.yellowLightTime_EW = cP.yellowLightTime_EW;
+        this.allRedLightTime_EW = cP.allRedLightTime_EW;
+        this.greenLightTime_NS  = cP.greenLightTime_NS;
+        this.yellowLightTime_NS = cP.yellowLightTime_NS;
+        this.allRedLightTime_NS = cP.allRedLightTime_NS;
 
         if(now_Light.equals(new int[]{2, 0, 0}) || now_Light.equals(new int[]{1, 0, 0})){
             NS_side_ar();
             countDown(3);
-        } else {
+        }else{
             countDown(seconds);
         }
         
@@ -45,22 +52,22 @@ public class physicalTrafficSignal {
         while(true){
             if(now_Light.equals(new int[]{0, 0, 2})){
                 EW_side_g();
-                countDownSeconds = (int)g_Time_EW;
-            } else if(now_Light.equals(new int[]{1, 0, 1})){
+                countDownSeconds = greenLightTime_EW;
+            }else if(now_Light.equals(new int[]{1, 0, 1})){
                 EW_side_y();
-                countDownSeconds = (int)y_Time_EW;
-            } else if(now_Light.equals(new int[]{2, 0, 1})){
+                countDownSeconds = yellowLightTime_EW;
+            }else if(now_Light.equals(new int[]{2, 0, 1})){
                 EW_side_ar();
-                countDownSeconds = (int)ar_Time_EW;
-            } else if(now_Light.equals(new int[]{0, 0, 1})){
+                countDownSeconds = allRedLightTime_EW;
+            }else if(now_Light.equals(new int[]{0, 0, 1})){
                 NS_side_g();
-                countDownSeconds = (int)g_Time_NS;
-            } else if(now_Light.equals(new int[]{0, 1, 2})){
+                countDownSeconds = greenLightTime_NS;
+            }else if(now_Light.equals(new int[]{0, 1, 2})){
                 NS_side_y();
-                countDownSeconds = (int)y_Time_NS;
-            } else if(now_Light.equals(new int[]{0, 2, 2})){
+                countDownSeconds = yellowLightTime_NS;
+            }else if(now_Light.equals(new int[]{0, 2, 2})){
                 NS_side_ar();
-                countDownSeconds = (int)ar_Time_NS;
+                countDownSeconds = allRedLightTime_NS;
             }
             countDown(countDownSeconds);
         }
@@ -72,7 +79,7 @@ public class physicalTrafficSignal {
             if(now_Light.equals(new int[]{1, 0, 1})){ //EW綠燈
                 EW_side_y();
                 countDown(yellowLightTime_EW);
-            } else if(now_Light.equals(new int[]{0, 0, 1})){  //EW⇒NS紅燈
+            }else if(now_Light.equals(new int[]{0, 0, 1})){  //EW⇒NS紅燈
                 NS_side_g();
                 countDown(greenLightTime_NS);
                 NS_side_y();
@@ -83,7 +90,7 @@ public class physicalTrafficSignal {
                 countDown(greenLightTime_EW);
                 EW_side_y();
                 countDown(yellowLightTime_EW);
-            } else if(now_Light.equals(new int[]{0, 1, 2})){ //NS綠燈
+            }else if(now_Light.equals(new int[]{0, 1, 2})){ //NS綠燈
                 NS_side_y();
                 countDown(yellowLightTime_NS);
                 NS_side_ar();
@@ -92,25 +99,25 @@ public class physicalTrafficSignal {
                 countDown(greenLightTime_EW);
                 EW_side_y();
                 countDown(yellowLightTime_EW);
-            } else if(now_Light.equals(new int[]{0, 2, 2})){ //NS黃燈
+            }else if(now_Light.equals(new int[]{0, 2, 2})){ //NS黃燈
                 NS_side_ar();
                 countDown(allRedLightTime_NS);
                 EW_side_g();
                 countDown(greenLightTime_EW);
                 EW_side_y();
                 countDown(yellowLightTime_EW);
-            } else if(now_Light.equals(new int[]{0, 0, 2})){ //NS⇒EW紅燈
+            }else if(now_Light.equals(new int[]{0, 0, 2})){ //NS⇒EW紅燈
                 EW_side_g();
                 countDown(greenLightTime_EW);
                 EW_side_y();
                 countDown(yellowLightTime_EW);
             }
             EW_side_f();
-        } else { //NS路權大
+        }else{ //NS路權大
             if(now_Light.equals(new int[]{0, 1, 2})){ //NS綠燈 OK
                 NS_side_y();
                 countDown(yellowLightTime_NS);
-            } else if(now_Light.equals(new int[]{0, 0, 2})){ //NS⇒EW紅燈
+            }else if(now_Light.equals(new int[]{0, 0, 2})){ //NS⇒EW紅燈
                 EW_side_g();
                 countDown(greenLightTime_EW);
                 EW_side_y();
@@ -121,7 +128,7 @@ public class physicalTrafficSignal {
                 countDown(greenLightTime_NS);
                 NS_side_y();
                 countDown(yellowLightTime_NS);
-            } else if(now_Light.equals(new int[]{1, 0, 1})){ //EW綠燈 OK
+            }else if(now_Light.equals(new int[]{1, 0, 1})){ //EW綠燈 OK
                 EW_side_y();
                 countDown(yellowLightTime_EW);
                 EW_side_ar();
@@ -130,14 +137,14 @@ public class physicalTrafficSignal {
                 countDown(greenLightTime_NS);
                 NS_side_y();
                 countDown(yellowLightTime_NS);
-            } else if(now_Light.equals(new int[]{0, 2, 1})){ //EW黃燈 ok
+            }else if(now_Light.equals(new int[]{0, 2, 1})){ //EW黃燈 ok
                 EW_side_ar();
                 countDown(allRedLightTime_EW);
                 NS_side_g();
                 countDown(greenLightTime_NS);
                 NS_side_y();
                 countDown(yellowLightTime_NS);
-            } else if(now_Light.equals(new int[]{0, 0, 1})){  //EW⇒NS紅燈
+            }else if(now_Light.equals(new int[]{0, 0, 1})){  //EW⇒NS紅燈
                 NS_side_g();
                 countDown(greenLightTime_NS);
                 NS_side_y();
@@ -157,25 +164,25 @@ public class physicalTrafficSignal {
                 countDown(1);
                 seconds = greenLightTime_EW;
                 EW_side_g();
-            } else if(now_Light.equals(new int[]{0, 2, 2})){ //NS是黃燈
+            }else if(now_Light.equals(new int[]{0, 2, 2})){ //NS是黃燈
                 countDown(seconds);
                 NS_side_ar();
                 countDown(1);
                 seconds = greenLightTime_EW;
                 EW_side_g();
-            } else if(now_Light.equals(new int[]{2, 0, 0})){ //如果之前是閃燈模式
+            }else if(now_Light.equals(new int[]{2, 0, 0})){ //如果之前是閃燈模式
                 EW_side_f();
-            } else if(now_Light.equals(new int[]{0, 2, 0})){ //如果之前是閃燈模式
+            }else if(now_Light.equals(new int[]{0, 2, 0})){ //如果之前是閃燈模式
                 NS_side_f();
-            } else { //NS是紅燈
+            }else{ //NS是紅燈
                 if(now_Light.equals(new int[]{0, 0, 2})){
                     seconds = greenLightTime_EW;
-                } else if(now_Light.equals(new int[]{2, 0, 1}) || now_Light.equals(new int[]{0, 0, 1})){
+                }else if(now_Light.equals(new int[]{2, 0, 1}) || now_Light.equals(new int[]{0, 0, 1})){
                     seconds = 5;
                 }
                 EW_side_g();
             }
-        } else if(condition == 2){ //緊急車輛從NS來時
+        }else if(condition == 2){ //緊急車輛從NS來時
             if(now_Light.equals(new int[]{1, 0, 1})){ //EW是綠燈
                 EW_side_y();
                 countDown(3);
@@ -183,40 +190,40 @@ public class physicalTrafficSignal {
                 countDown(1);
                 seconds = greenLightTime_NS;
                 NS_side_g();
-            } else if(now_Light.equals(new int[]{2, 0, 1})){ //EW是黃燈
+            }else if(now_Light.equals(new int[]{2, 0, 1})){ //EW是黃燈
                 countDown(seconds);
                 EW_side_ar();
                 countDown(1);
                 seconds = greenLightTime_NS;
                 NS_side_g();
-            } else if(now_Light.equals(new int[]{2, 0, 0})){ //如果之前是閃燈模式
+            }else if(now_Light.equals(new int[]{2, 0, 0})){ //如果之前是閃燈模式
                 EW_side_f();
-            } else if(now_Light.equals(new int[]{0, 2, 0})){ //如果之前是閃燈模式
+            }else if(now_Light.equals(new int[]{0, 2, 0})){ //如果之前是閃燈模式
                 NS_side_f();
-            } else { //EW是紅燈
+            }else{ //EW是紅燈
                 if(now_Light.equals(new int[]{0, 0, 1})){
                     seconds = greenLightTime_NS;
-                } else if(now_Light.equals(new int[]{0, 2, 2}) || now_Light.equals(new int[]{0, 0, 2})){
+                }else if(now_Light.equals(new int[]{0, 2, 2}) || now_Light.equals(new int[]{0, 0, 2})){
                     seconds = 5;
                 }
                 NS_side_g();
             }
-        } else { //兩方：綠燈方3秒黃燈再全紅，黃燈、全紅直接變
+        }else{ //兩方：綠燈方3秒黃燈再全紅，黃燈、全紅直接變
             if(now_Light.equals(new int[]{1, 0, 1})){ //EW向綠燈
                 EW_side_y();
                 countDown(3);
                 EW_side_ar();
-            } else if(now_Light.equals(new int[]{0, 1, 2})){ //NS向綠燈
+            }else if(now_Light.equals(new int[]{0, 1, 2})){ //NS向綠燈
                 NS_side_y();
                 countDown(3);
                 NS_side_ar();
-            } else if(now_Light.equals(new int[]{2, 0, 1}) || now_Light.equals(new int[]{0, 0, 1})){ //EW向黃燈||EW⇒NS紅燈
+            }else if(now_Light.equals(new int[]{2, 0, 1}) || now_Light.equals(new int[]{0, 0, 1})){ //EW向黃燈||EW⇒NS紅燈
                 EW_side_ar();
-            } else if(now_Light.equals(new int[]{0, 2, 2}) || now_Light.equals(new int[]{0, 0, 2})){ //NS向黃燈||NS⇒EW紅燈
+            }else if(now_Light.equals(new int[]{0, 2, 2}) || now_Light.equals(new int[]{0, 0, 2})){ //NS向黃燈||NS⇒EW紅燈
                 NS_side_ar();
-            } else if(now_Light.equals(new int[]{2, 0, 0})){ //如果之前是閃燈模式
+            }else if(now_Light.equals(new int[]{2, 0, 0})){ //如果之前是閃燈模式
                 EW_side_f();
-            } else if(now_Light.equals(new int[]{0, 2, 0})){ //如果之前是閃燈模式
+            }else if(now_Light.equals(new int[]{0, 2, 0})){ //如果之前是閃燈模式
                 NS_side_f();
             }
             seconds = 3;
@@ -226,7 +233,7 @@ public class physicalTrafficSignal {
         switch(con){
             case 0://一直綠燈(輸入方向)
                 private int lD getDirection();//get direction
-                if (lD == 0){
+                if(lD == 0){
                     EW_side_g();
                 }else{
                     NS_side_g();
@@ -240,7 +247,6 @@ public class physicalTrafficSignal {
                 //change traffic light time, countdown
                 break;    
         }
-        // 一直綠燈、閃燈、正常
     }
 
     public void EW_side_g(){
@@ -351,17 +357,17 @@ public class physicalTrafficSignal {
 /* public void changeLightMode(int before, int after){
  *    if((before == 3 && after == 2)||(before == 2 && after == 3)){
  *         //直接改變秒數
- *     } else if((before == 3 && after == 1)||(before == 2 && after == 1)||(before == 0 && after == 1)){
+ *     }else if((before == 3 && after == 1)||(before == 2 && after == 1)||(before == 0 && after == 1)){
  *         //路權大的那一方黃燈時改變
- *     } else if((before == 3 && after == 0)||(before == 2 && after == 0)){
+ *     }else if((before == 3 && after == 0)||(before == 2 && after == 0)){
  *         //兩方：綠燈方黃燈再全紅
  *         //緊急車輛方為綠燈：直接更改
  *         //緊急車輛方為紅燈：對向車道進入黃燈時間，緊急向車道再切換成綠燈
- *     } else if((before == 1 && after == 3)||(before == 0 && after == 3)){
+ *     }else if((before == 1 && after == 3)||(before == 0 && after == 3)){
  *         //全紅三秒後，套用計算好的秒數，依序顯示(直接切換)
- *     } else if((before == 1 && after == 2)||(before == 0 && after == 3)){
+ *     }else if((before == 1 && after == 2)||(before == 0 && after == 3)){
  *         //全紅三秒後，回歸基礎，依序顯示(直接切換)
- *     } else {
+ *     }else{
  *         //不切換
  *     }
  * }

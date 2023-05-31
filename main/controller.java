@@ -52,7 +52,9 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
     // private String intersectionID = jdbc.getInterID("intersection");
     private int[] right = {0, 0}; //路權 int[1]，[0]: right_EW, [1]: right_NS
     private int[] lightTime; // 預設秒數 int[5]，[0]: glt_EW, [1]: ylt_EW, [2]:arlt_EW, [3]: glt_NS, [4]:ylt_NS, [5]:arlt_NS
-
+    // 先套預設模板
+    private Mode mode_B = new BasicDensityMode(lightTime);
+    pTS.setcP(mode_B.changeMode());
     while(true){
         try {
             tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
@@ -93,26 +95,20 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
             }
             modeTimeNow = (int)System.currentTimeMillis() / 1000;
             //套模板的條件  // 紅燈燈號結束前五秒 || 閃燈狀態下(10秒判斷一次)，從秒資料庫獲取最新一筆資料來判斷模板的變更與否
-            if(pTS.mode_N == 2 && pTS.getSecond() == 1 && (pTS.now_Light.equals(new int[]{1, 0, 1})||pTS.now_Light.equals(new int[]{0, 1, 2}))){ //閃燈判斷換模板
+            if(pTS.mode_N == 2 && pTS.getSecond() == 1 && (pTS.now_Light.equals(new int[]{1, 0, 1})||pTS.now_Light.equals(new int[]{0, 1, 2}))){ //正常判斷換模板
                 cP = judgeMode();
                 if(pTS.mode_N == 0 || pTS.mode_N == 1){
                     modeTime = (int)System.currentTimeMillis() / 1000;
                     modeTimeNow = (int)System.currentTimeMillis() / 1000;
                 }
-            }else if(pTS.mode_N == 1 && modeTime + 10 <= modeTimeNow){ //閃燈判斷換模板
-                cP = judgeMode();
-                modeTime = (int)System.currentTimeMillis() / 1000;
-                modeTimeNow = (int)System.currentTimeMillis() / 1000;
-            }else if(pTS.mode_N == 0 && modeTime + 5 <= modeTimeNow){ //緊急判斷換模板
+            }else if((pTS.mode_N == 1 && modeTime + 10 <= modeTimeNow) || (pTS.mode_N == 0 && modeTime + 5 <= modeTimeNow)){ //閃燈判斷換模板 緊急判斷換模板
                 cP = judgeMode();
                 modeTime = (int)System.currentTimeMillis() / 1000;
                 modeTimeNow = (int)System.currentTimeMillis() / 1000;
             }
             pTS.setcP(cP);
-        } catch (Exception e){
-            //change mode to default
-            private Mode mode = new BasicDensityMode();;
-            pTS.setcP(mode.changeMode());
+        } catch (Exception e){ //change mode to default
+            pTS.setcP(mode_B.changeMode());
         }
     }
 
