@@ -126,10 +126,10 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
                 case 0:
                 case 1:
                 case 2:
-                    mode = new HighDensityMode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS), camera_EW.RS.density, camera_NS.RS.density);
+                    mode = new HighDensityMode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS), camera_EW.RS.density, camera_NS.RS.density, lightTime);
                     break;
                 case 3:
-                    mode = new BasicDensityMode();
+                    mode = new BasicDensityMode(lightTime);
                     break;
                 case 4:
                     mode = new LowDensityMode(right[0], right[1]);

@@ -7,8 +7,8 @@ public class changedParameter{
     protected int greenLightTime_NS = 15;
     protected int yellowLightTime_NS = 3;
     protected int allRedLightTime_NS = 1;
-    protected int condition;
-    protected int flashing;
+    protected int condition = 0;
+    protected int flashing = 0;
 
     //假設G8 Y2 R10
     //此G8 對R8
@@ -27,8 +27,13 @@ public class changedParameter{
         condition = cd;//0: 正常, 1: EW, 2: NS, 3: both
         flashing = right;//0: 正常, 1: EW, 2: NS
     }
-    changedParameter(double glt_EW, double glt_NS, int lightTime[]){
-        
+    changedParameter(int lightTime[]){
+        greenLightTime_EW = lightTime[0];
+        yellowLightTime_EW = lightTime[1];
+        allRedLightTime_EW = lightTime[2];
+        greenLightTime_NS = lightTime[3];
+        yellowLightTime_NS = lightTime[4];
+        allRedLightTime_NS = lightTime[5];
     }
     
     public void setParameter(double rlt, double glt, double ylt, int fla){
@@ -38,9 +43,6 @@ public class changedParameter{
         flashing = fla;
     }
     public int check(){
-        //if(fla == 0 && redLightTime == greenLightTime && greenLightTime == yellowLightTime && yellowLightTime == redLightTime){
-            return (int)redLightTime;
-        //}
+        return (int)redLightTime;
     }
-    
 }
