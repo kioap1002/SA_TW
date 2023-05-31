@@ -9,49 +9,51 @@ import java.time.*;
 
 // import jdbc_test.*;
 
-public class controller {  //有手動跟自動的模式，loop控制更新資料庫 & 更改模板
-    /* 目前沒用到的值
-     // private double densityDifferenceValue_EW;//高密度mode計算綠燈增加秒數用
-     // private double densityDifferenceValue_NS;//高密度mode計算綠燈增加秒數用
-     // private int mode_EW; //密度模板 0: 低 1:正常 2:高 //整合進road_sum
-     // private int mode_NS; //密度模板 0: 低 1:正常 2:高 //整合進road_sum
-     // private int adjustmentResult;    //目前沒用
-     // private double timer; //持續時間 //目前沒用
-     // private trafficLight tL;  //用來傳我們要更改的Mode進去  //parameter//沒用ㄉ東西
-     // private Mode mode;
+public class controller { // 有手動跟自動的模式，loop控制更新資料庫 & 更改模板
+    /*
+     * 目前沒用到的值
+     * // private double densityDifferenceValue_EW;//高密度mode計算綠燈增加秒數用
+     * // private double densityDifferenceValue_NS;//高密度mode計算綠燈增加秒數用
+     * // private int mode_EW; //密度模板 0: 低 1:正常 2:高 //整合進road_sum
+     * // private int mode_NS; //密度模板 0: 低 1:正常 2:高 //整合進road_sum
+     * // private int adjustmentResult; //目前沒用
+     * // private double timer; //持續時間 //目前沒用
+     * // private trafficLight tL; //用來傳我們要更改的Mode進去 //parameter//沒用ㄉ東西
+     * // private Mode mode;
      */
-    //近30天平均密度
+    // 近30天平均密度
     private double Last30DaysDensity_EW;
     private double Last30DaysDensity_NS;
-    //日資料庫的日期
+    // 日資料庫的日期
     private LocalDate day = LocalDate.now();
-    //控制每五秒拍攝一次的變數，上固定下變動
-    private int time = (int)System.currentTimeMillis() / 1000;
-    private int timeNow = (int)System.currentTimeMillis() / 1000;
-    //控制患日更新的變數，上固定下變動
-    private int today = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
-    private int tomarrow = (int)System.currentTimeMillis() / (1000 * 60 * 60 * 24);
-    //控制緊急模板與低密度模板時判斷模板變數，上固定下變動
-    private int modeTime = (int)System.currentTimeMillis() / 1000;
-    private int modeTimeNow = (int)System.currentTimeMillis() / 1000;
-    //上秒資料庫、下日資料庫，之後可能會改掉
+    // 控制每五秒拍攝一次的變數，上固定下變動
+    private int time = (int) System.currentTimeMillis() / 1000;
+    private int timeNow = (int) System.currentTimeMillis() / 1000;
+    // 控制患日更新的變數，上固定下變動
+    private int today = (int) System.currentTimeMillis() / (1000 * 60 * 60 * 24);
+    private int tomarrow = (int) System.currentTimeMillis() / (1000 * 60 * 60 * 24);
+    // 控制緊急模板與低密度模板時判斷模板變數，上固定下變動
+    private int modeTime = (int) System.currentTimeMillis() / 1000;
+    private int modeTimeNow = (int) System.currentTimeMillis() / 1000;
+    // 上秒資料庫、下日資料庫，之後可能會改掉
     private intersectionsDB iDb = new intersectionsDB();
     private intersectionsDB_day iDb_d = new intersectionsDB_day();
-    //相機
+    // 相機
     private east_westDetectCamera camera_EW;
     private north_southDetectCamera camera_NS;
-    //整合路口資訊
+    // 整合路口資訊
     private roadSituation_sum road_sum;
-    //提供給pTS的資料
+    // 提供給pTS的資料
     private changedParameter cP;
-    //實體紅綠燈
-    private physicalTrafficSignal pTS = new physicalTrafficSignal();//用來傳我們要更改的Mode進去  //parameter
+    // 實體紅綠燈
+    private physicalTrafficSignal pTS = new physicalTrafficSignal();// 用來傳我們要更改的Mode進去 //parameter
     // 取得路口資訊的部份，未完善好，路口資訊需要得到的部分，路權、預設秒數
-    
+
     // private jdbc_test jdbc;
     // private String intersectionID = jdbc.getInterID("intersection");
-    private int[] right = {0, 0}; //路權 int[1]，[0]: right_EW, [1]: right_NS
-    private int[] lightTime; // 預設秒數 int[5]，[0]: glt_EW, [1]: ylt_EW, [2]:arlt_EW, [3]: glt_NS, [4]:ylt_NS, [5]:arlt_NS
+    private int[] right = { 0, 0 }; // 路權 int[1]，[0]: right_EW, [1]: right_NS
+    private int[] lightTime; // 預設秒數 int[5]，[0]: glt_EW, [1]: ylt_EW, [2]:arlt_EW, [3]: glt_NS, [4]:ylt_NS,
+                             // [5]:arlt_NS
 
     while(true){
         try {
@@ -111,37 +113,38 @@ public class controller {  //有手動跟自動的模式，loop控制更新資�
             pTS.setcP(cP);
         } catch (Exception e){
             //change mode to default
-            private Mode mode = new BasicDensityMode();;
-            pTS.setcP(mode.changeMode());
-        }
+    private Mode mode_b = new BasicDensityMode(lightTime);pTS.setcP(mode_b.changeMode());
+    }
+
     }
 
     private changedParameter judgeMode(){
-        private Mode mode;
-        if(road_sum.haveEmergency() != 0){
-            mode = new emergencyMode(road_sum.haveEmergency());
-        }else{
-            // 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
-            switch (road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS)){
-                case 0:
-                case 1:
-                case 2:
-                    mode = new HighDensityMode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS), camera_EW.RS.density, camera_NS.RS.density, lightTime);
-                    break;
-                case 3:
-                    mode = new BasicDensityMode(lightTime);
-                    break;
-                case 4:
-                    mode = new LowDensityMode(right[0], right[1]);
-                    break;
-                default:
-                    System.out.println("system error");
-                    break;
-            }
+
+    private Mode mode;if(road_sum.haveEmergency()!=0)
+    {
+        mode = new emergencyMode(road_sum.haveEmergency());
+    }else
+    {
+        // 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
+        switch (road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS)) {
+            case 0:
+            case 1:
+            case 2:
+                mode = new HighDensityMode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS),
+                        camera_EW.RS.density, camera_NS.RS.density, lightTime);
+                break;
+            case 3:
+                mode = new BasicDensityMode(lightTime);
+                break;
+            case 4:
+                mode = new LowDensityMode(right[0], right[1]);
+                break;
+            default:
+                System.out.println("system error");
+                break;
         }
-        return mode.changeMode();
-    }
-}
+    }return mode.changeMode();
+}}
 /*
  * 
  */
