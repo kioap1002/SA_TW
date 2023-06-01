@@ -1,0 +1,197 @@
+.bar{
+  position: fixed;
+  bottom: 2.5%;
+  width: 0.5%;
+  height: 20px;
+  left: 92.5%;    
+  border-radius: 25px;
+}
+.nsty {
+  display: flex;
+  color: #ffffff;
+  justify-content: center;
+}
+  
+body {
+    margin: 0px;
+    cursor: url('bird.png'), auto;
+    background-color: rgb(217, 170, 120);
+}
+.acg {
+    text-align: center;
+    font-weight: bolder;
+    font-size: 60px;
+    text-decoration: none;
+}
+.introduction_his {
+    padding: 10%;
+    background-color: rgb(255 231 209);
+    margin: 18% auto 6%;
+}
+.navbar1 {
+  font-family: "微軟正黑體";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* margin: 4% auto; */
+}
+.nav_text {
+    font-size: 18px;
+    color: black;
+    text-decoration: none;
+    margin: 0px 20px;
+}
+.nav_text:hover {
+    color:rgb(93, 93, 93);
+}
+.line {
+    border-right: solid rgb(93, 93, 93);
+    position: sticky;
+}
+.pa1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.boxes {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: auto;
+}
+.box {
+    width: 250px;
+    display: flex;
+    color: white;
+    align-items: center;
+    justify-content: center;
+    background-color: #F2D0A9;
+    height: 500px;
+    margin: 7% 2%;
+    float: left;
+    transform-origin: 0,0;
+}
+.box:hover {
+    transform: scale(1.08,1.08);
+    color: rgb(255, 255, 255);
+    transition: .5s ease;
+    background-color: #F6C8C8;
+}
+.box_c:hover {
+  
+  background-color: #FED1BB;
+}
+.box_g:hover {
+  background-color: #BFDDE7;
+}
+.box_n:hover {
+  background-color: #DAD0F0;
+}
+.box_p:hover {
+  background-color: #B6D9C3;
+}
+
+
+.gray_ {
+    height: 200px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+.go_top {
+    position: fixed;
+    height: 50px;
+    width: 4%;
+    right: 20px;
+    bottom: 80px;
+    
+}
+.go_top:hover {
+    cursor: pointer;
+}
+
+.link {
+    color: rgb(83, 83, 189);
+    text-decoration: none;
+}
+
+.ft {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F2D0A9;
+    height: 200px;
+    width: auto;
+    margin-top: 5%;
+}
+
+/* #loading{
+    background:#ffffff;
+    bottom:0;
+    left:0;
+    position: fixed;
+    right:0;
+    top:0;
+    z-index:500;
+} */
+ 
+#begin{
+    background: url(bird2.gif)center center no-repeat; /*//這裡可以替換掉你需要載入的圖片*/
+    height:200px;  /* //控制大小 */
+    width:200px;   /* //控制大小 */
+    left:50%;          /* //控制位置，可去掉 */
+    top:50%;            /* //控制位置，可去掉 */
+    margin: -100px 0 0 -100px;
+    position: absolute;
+}
+
+  /************lokiFooter**********/
+footer>.position-fixed {
+  right: 5vh;
+  bottom: 5vh;
+  z-index: 999;
+}
+
+.marqee {
+	height: 3em;
+	overflow: hidden; 
+	position: relative;
+}
+.marqee > p{
+  animation: marqee 10s linear infinite;
+	position: absolute;
+}
+.marqee1 > p{
+  animation: marqee 8s linear infinite;
+	position: absolute;
+}
+.marqee2 > p{
+  animation: marqee 5s linear infinite;
+	position: absolute;
+}
+.marqee3 > p{
+  animation: marqee 12s linear infinite;
+	position: absolute;
+}
+.marqee4 > p{
+  animation: marqee 7s linear infinite;
+	position: absolute;
+}
+@keyframes marqee {
+	0% {
+		left: 0px;
+		/* transform: translateX(0%); */
+	}
+	50% {
+		left: 73%;
+		/* transform: translateX(-100%); */
+	}
+	100% {
+		left: 0px;
+		/* transform: translateX(-100%); */
+	}
+}
