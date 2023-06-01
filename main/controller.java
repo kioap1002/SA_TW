@@ -10,16 +10,15 @@ import java.time.*;
 // import jdbc_test.*;
 
 public class controller { // 有手動跟自動的模式，loop控制更新資料庫 & 更改模板
-    /*
-     * 目前沒用到的值
-     * // private double densityDifferenceValue_EW;//高密度mode計算綠燈增加秒數用
-     * // private double densityDifferenceValue_NS;//高密度mode計算綠燈增加秒數用
-     * // private int mode_EW; //密度模板 0: 低 1:正常 2:高 //整合進road_sum
-     * // private int mode_NS; //密度模板 0: 低 1:正常 2:高 //整合進road_sum
-     * // private int adjustmentResult; //目前沒用
-     * // private double timer; //持續時間 //目前沒用
-     * // private trafficLight tL; //用來傳我們要更改的Mode進去 //parameter//沒用ㄉ東西
-     * // private Mode mode;
+    /*目前沒用到的值
+     * private double densityDifferenceValue_EW;//高密度mode計算綠燈增加秒數用
+     * private double densityDifferenceValue_NS;//高密度mode計算綠燈增加秒數用
+     * private int mode_EW; //密度模板 0: 低 1:正常 2:高 //整合進road_sum
+     * private int mode_NS; //密度模板 0: 低 1:正常 2:高 //整合進road_sum
+     * private int adjustmentResult; //目前沒用
+     * private double timer; //持續時間 //目前沒用
+     * private trafficLight tL; //用來傳我們要更改的Mode進去 //parameter//沒用ㄉ東西
+     * private Mode mode;
      */
     // 近30天平均密度
     private double Last30DaysDensity_EW;
@@ -51,14 +50,13 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
 
     // private jdbc_test jdbc;
     // private String intersectionID = jdbc.getInterID("intersection");
-    private int[] right = { 0, 0 }; // 路權 int[1]，[0]: right_EW, [1]: right_NS
-    private int[] lightTime; // 預設秒數 int[5]，[0]: glt_EW, [1]: ylt_EW, [2]:arlt_EW, [3]: glt_NS, [4]:ylt_NS,
-                             // [5]:arlt_NS
+    private int[] right = {0, 0}; // 路權 int[1]，[0]: right_EW, [1]: right_NS
+    // 預設秒數 int[5]，[0]: glt_EW, [1]: ylt_EW, [2]:arlt_EW, [3]: glt_NS, [4]:ylt_NS, [5]:arlt_NS
+    private int[] lightTime; 
     // 先套預設模板
     private Mode mode_B = new BasicDensityMode(lightTime);
-    // pTS.setcP(mode_B.changeMode());
-    while(true)
-    {
+    pTS.setcP(mode_B.changeMode());
+    while(true){
         try {
             tomarrow = (int) System.currentTimeMillis() / (1000 * 60 * 60 * 24);
             if (tomarrow - today == 1) {
@@ -107,8 +105,8 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
             }
             modeTimeNow = (int) System.currentTimeMillis() / 1000;
             // 套模板的條件 // 紅燈燈號結束前五秒 || 閃燈狀態下(10秒判斷一次)，從秒資料庫獲取最新一筆資料來判斷模板的變更與否
-            if (pTS.mode_N == 2 && pTS.getSecond() == 1
-                    && (pTS.now_Light.equals(new int[] { 1, 0, 1 }) || pTS.now_Light.equals(new int[] { 0, 1, 2 }))) { // 正常判斷換模板
+            if (pTS.mode_N == 2 && pTS.getSecond() == 1 &&
+                (pTS.now_Light.equals(new int[] { 1, 0, 1 }) || pTS.now_Light.equals(new int[] { 0, 1, 2 }))) { // 正常判斷換模板
                 cP = judgeMode();
                 if (pTS.mode_N == 0 || pTS.mode_N == 1) {
                     modeTime = (int) System.currentTimeMillis() / 1000;
@@ -127,32 +125,32 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     }
 
     private changedParameter judgeMode(){
-
-    private Mode mode;if(road_sum.haveEmergency()!=0)
-    {
-        mode = new emergencyMode(road_sum.haveEmergency());
-    }else
-    {
-        // 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
-        switch (road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS)) {
-            case 0:
-            case 1:
-            case 2:
-                mode = new HighDensityMode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS),
-                        camera_EW.RS.density, camera_NS.RS.density, lightTime);
-                break;
-            case 3:
-                mode = new BasicDensityMode(lightTime);
-                break;
-            case 4:
-                mode = new LowDensityMode(right[0], right[1]);
-                break;
-            default:
-                System.out.println("system error");
-                break;
+        private Mode mode;
+        if(road_sum.haveEmergency()!=0){
+            mode = new emergencyMode(road_sum.haveEmergency());
+        }else{
+            // 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
+            switch (road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS)) {
+                case 0:
+                case 1:
+                case 2:
+                    mode = new HighDensityMode(road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS),
+                            camera_EW.RS.density, camera_NS.RS.density, lightTime);
+                    break;
+                case 3:
+                    mode = new BasicDensityMode(lightTime);
+                    break;
+                case 4:
+                    mode = new LowDensityMode(right[0], right[1]);
+                    break;
+                default:
+                    System.out.println("system error");
+                    break;
+            }
         }
-    }return mode.changeMode();
-}}
+        return mode.changeMode();
+    }
+}
 /*
  * 
  */

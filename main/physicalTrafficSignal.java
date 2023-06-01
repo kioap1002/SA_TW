@@ -242,6 +242,7 @@ public class physicalTrafficSignal {
                 break;
             case 1://閃燈，從路權拿
                 //flashing, countdown
+                
                 break;
             case 2://正常(輸入秒數)
                 //change traffic light time, countdown
