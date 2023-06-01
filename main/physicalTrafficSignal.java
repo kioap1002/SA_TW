@@ -232,6 +232,8 @@ public class physicalTrafficSignal {
         }
     }
     public void trafficLightManual(int timer, int situation){
+        NS_side_ar();
+        countDown(3);
         switch(situation){
             case 0://一直綠燈(輸入方向)
                 private int lD getDirection();//get direction
@@ -279,6 +281,8 @@ public class physicalTrafficSignal {
                 }
                 break;
         }
+        NS_side_ar();
+        countDown(3);
     }
 
     public void EW_side_g(){
@@ -340,7 +344,7 @@ public class physicalTrafficSignal {
     }
 }
 
-/*
+/* 紅綠燈如何變換
  * 當EW_side=1 東西向通行
  * EW_g_light<=1 NS_r_light<=1 EW綠燈 NS紅燈
  * EW_y_light<=1 NS_r_light<=1 EW黃燈 NS紅燈
