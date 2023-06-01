@@ -68,7 +68,7 @@ class LowDensityMode extends Mode{
     }
 }
 
-class manualMode extends Mode{\
+class manualMode extends Mode{
     private int direction = 0;
     private int flashing = 0;
     private int[] lightTime = {0, 0, 0, 0, 0, 0};

@@ -66,7 +66,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
         if(action.equals("AUTO")){
             autoMode();
         }else{
-
+            manualMode();
             action = "AUTO";
         }
     }
@@ -170,10 +170,10 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
         if(situation != 3){
             private Mode mode_M;
             int timer = userInput.nextInt();
-            if(situation =  0){
+            if(situation == 0){
                 int direction = userInput.nextInt(); //0: EW, 1: NS
                 mode_M = new manualMode(direction);
-            }else(situation = 2){
+            }else(situation == 2){
                 mode_M = new manualMode(right[0], right[1]);
             }else{
                 int glt_EW = userInput.nextInt();
@@ -185,7 +185,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
                 mode_M = new manualMode(glt_EW, ylt_EW, arlt_EW, glt_NS, ylt_NS, arlt_NS);
             }
             pTS.setcP(mode_M.changeMode());
-            pTS.trafficLightManual(timer, situation)
+            pTS.trafficLightManual(timer, situation);
         }else{
             int glt_EW = userInput.nextInt();
             int ylt_EW = userInput.nextInt();
