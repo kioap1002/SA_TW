@@ -156,8 +156,9 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     public changedParameter judgeMode() {
         Mode mode = mode_B;
         changedParameter cP_M;
-        if (road_sum.haveEmergency() != 0) {
-            mode = new emergencyMode(road_sum.haveEmergency());
+        int EV = road_sum.haveEmergency();
+        if (EV != 0) {
+            mode = new emergencyMode(EV);
         } else {
             // 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
             switch (road_sum.densityMode_col(Last30DaysDensity_EW, Last30DaysDensity_NS)) {
