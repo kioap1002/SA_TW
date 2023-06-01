@@ -21,6 +21,8 @@ public class physicalTrafficSignal {
     private changedParameter cP;
     public void setcP(changedParameter cP){
         this.cP = cP;
+    }
+    public void changeTrafficLight(){
         if(cP.right == 0 && cP.condition == 0){
             trafficLightTime();
         }else if(cP.condition != 0){
@@ -229,8 +231,8 @@ public class physicalTrafficSignal {
             seconds = 3;
         }
     }
-    public void trafficLightManual(int timer, int con, changedParameter cP_M){
-        switch(con){
+    public void trafficLightManual(int timer, int situation){
+        switch(situation){
             case 0://一直綠燈(輸入方向)
                 private int lD getDirection();//get direction
                 if(lD == 0){
@@ -242,7 +244,7 @@ public class physicalTrafficSignal {
                 break;
             case 1://閃燈，從路權拿
                 //flashing, countdown
-                if(cP_M.right == 0){
+                if(cP.right == 0){
                     EW_side_f();
                 }else{
                     NS_side_f();
@@ -255,27 +257,27 @@ public class physicalTrafficSignal {
                 while(grandTotal < timer){
                     if(now_Light.equals(new int[]{0, 0, 2})){
                         EW_side_g();
-                        countDownSeconds = cP_M.greenLightTime_EW;
+                        countDownSeconds = cP.greenLightTime_EW;
                     }else if(now_Light.equals(new int[]{1, 0, 1})){
                         EW_side_y();
-                        countDownSeconds = cP_M.yellowLightTime_EW;
+                        countDownSeconds = cP.yellowLightTime_EW;
                     }else if(now_Light.equals(new int[]{2, 0, 1})){
                         EW_side_ar();
-                        countDownSeconds = cP_M.allRedLightTime_EW;
+                        countDownSeconds = cP.allRedLightTime_EW;
                     }else if(now_Light.equals(new int[]{0, 0, 1})){
                         NS_side_g();
-                        countDownSeconds = cP_M.greenLightTime_NS;
+                        countDownSeconds = cP.greenLightTime_NS;
                     }else if(now_Light.equals(new int[]{0, 1, 2})){
                         NS_side_y();
-                        countDownSeconds = cP_M.yellowLightTime_NS;
+                        countDownSeconds = cP.yellowLightTime_NS;
                     }else if(now_Light.equals(new int[]{0, 2, 2})){
                         NS_side_ar();
-                        countDownSeconds = cP_M.allRedLightTime_NS;
+                        countDownSeconds = cP.allRedLightTime_NS;
                     }
                     countDown(countDownSeconds);
                     grandTotal += countDownSeconds;
                 }
-                break;    
+                break;
         }
     }
 

@@ -10,12 +10,9 @@ class emergencyMode extends Mode{
         this.EV = EV;
     }
     public changedParameter changeMode(){
-        changedParameter cP = new changedParameter();
-        cP = new changedParameter(EV,0);
-        return cP;
+        return new changedParameter(EV,0);
     }
 }
-
 class HighDensityMode extends Mode{
     private int D;
     private double density_EW;
@@ -46,7 +43,7 @@ class HighDensityMode extends Mode{
 
     }
     public changedParameter changeMode(){
-        return new changedParameter(lightTime);//x
+        return new changedParameter(lightTime);
     }
 }
 class BasicDensityMode extends Mode{
@@ -55,26 +52,44 @@ class BasicDensityMode extends Mode{
         this.lightTime = lT;
     }
     public changedParameter changeMode(){
-        changedParameter cP = new changedParameter();
-        cP = new changedParameter(lightTime);
-        return cP;
+        return new changedParameter(lightTime);;
     }
 }
 class LowDensityMode extends Mode{
-    private int EW_right;
-    private int NS_right;
+    private int fla = 1;
     LowDensityMode(int EW, int NS){
-        this.EW_right = EW;
-        this.NS_right = NS;
-    }
-    public changedParameter changeMode(){
-        changedParameter cP = new changedParameter();
         //判斷flashing的狀態
-        int fla = 1;
-        if(EW_right < NS_right){
+        if(EW < NS){
             fla = 2;
         }
-        cP = new changedParameter(0, fla);
-        return cP;
+    }
+    public changedParameter changeMode(){
+        return new changedParameter(0, fla);
+    }
+}
+
+class manualMode extends Mode{\
+    private int direction = 0;
+    private int flashing = 0;
+    private int[] lightTime = {0, 0, 0, 0, 0, 0};
+    manualMode(int dire){
+        direction = dire;
+    }
+    manualMode(int EW, int NS){
+        flashing = 1;
+        if(EW < NS){
+            flashing = 2;
+        }
+    }
+    manualMode(int glt_EW, int ylt_EW, int arlt_EW, int glt_NS, int ylt_NS, int arlt_NS){
+        lightTime[0] = glt_EW;
+        lightTime[1] = ylt_EW;
+        lightTime[2] = arlt_EW;
+        lightTime[3] = glt_NS;
+        lightTime[4] = ylt_NS;
+        lightTime[5] = arlt_NS;
+    }
+    public changedParameter changeMode(){
+        return new changedParameter(direction, flashing, lightTime);
     }
 }

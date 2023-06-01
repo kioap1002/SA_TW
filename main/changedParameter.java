@@ -7,7 +7,7 @@ public class changedParameter{
     protected int greenLightTime_NS = 15;
     protected int yellowLightTime_NS = 3;
     protected int allRedLightTime_NS = 1;
-    protected int condition = 0;
+    protected int condition = 0; //在自動是緊急方向，手動是哪邊要維持綠燈
     protected int flashing = 0;
 
     changedParameter(int cd, int right){
@@ -24,14 +24,23 @@ public class changedParameter{
         yellowLightTime_NS = lightTime[4];
         allRedLightTime_NS = lightTime[5];
     }
-    
-    public void setParameter(double rlt, double glt, double ylt, int fla){
-        redLightTime = rlt;
-        greenLightTime = glt;
-        yellowLightTime = ylt;
-        flashing = fla;
+    changedParameter(int direction, int right, int lightTime[]){//手動用
+        condition = direction;
+        lashing = right;
+        greenLightTime_EW = lightTime[0];
+        yellowLightTime_EW = lightTime[1];
+        allRedLightTime_EW = lightTime[2];
+        greenLightTime_NS = lightTime[3];
+        yellowLightTime_NS = lightTime[4];
+        allRedLightTime_NS = lightTime[5];
     }
-    public int check(){
+    public void setParameter(double rlt, double glt, double ylt, int fla){ //目前沒用
+        //redLightTime = rlt; 
+        //greenLightTime = glt;
+        //yellowLightTime = ylt;
+        //flashing = fla;
+    }
+    public int check(){ //目前沒用
         return (int)redLightTime;
     }
 }
