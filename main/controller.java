@@ -1,11 +1,12 @@
 package main;
 
-import javafx.print.PrintColor;
+
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Date;
 import java.time.*;
+import javafx.print.*;// import javafx.print.PrintColor;// 好像沒用到
 
 import java.util.Scanner;
 
@@ -68,6 +69,9 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
         }else{
             manualMode();
             action = "AUTO";
+        }
+        if(action.equals("CLOSE")){
+            break;
         }
     }
     private void autoMode(){
@@ -141,7 +145,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     }
     private changedParameter judgeMode(){
         private Mode mode;
-        if(road_sum.haveEmergency()!=0){
+        if(road_sum.haveEmergency() != 0){
             mode = new emergencyMode(road_sum.haveEmergency());
         }else{
             // 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
@@ -173,7 +177,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
             if(situation == 0){
                 int direction = userInput.nextInt(); //0: EW, 1: NS
                 mode_M = new manualMode(direction);
-            }else(situation == 2){
+            }else(situation == 1){
                 mode_M = new manualMode(right[0], right[1]);
             }else{
                 int glt_EW = userInput.nextInt();

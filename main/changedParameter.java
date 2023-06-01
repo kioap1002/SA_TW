@@ -26,7 +26,7 @@ public class changedParameter{
     }
     changedParameter(int direction, int right, int lightTime[]){//手動用
         condition = direction;
-        lashing = right;
+        flashing = right;
         greenLightTime_EW = lightTime[0];
         yellowLightTime_EW = lightTime[1];
         allRedLightTime_EW = lightTime[2];
@@ -34,15 +34,17 @@ public class changedParameter{
         yellowLightTime_NS = lightTime[4];
         allRedLightTime_NS = lightTime[5];
     }
-    public void setParameter(double rlt, double glt, double ylt, int fla){ //目前沒用
-        //redLightTime = rlt; 
-        //greenLightTime = glt;
-        //yellowLightTime = ylt;
-        //flashing = fla;
-    }
-    public int check(){ //目前沒用
-        return (int)redLightTime;
-    }
+    /* 目前沒用的部份
+     * public void setParameter(double rlt, double glt, double ylt, int fla){
+     *     redLightTime = rlt; 
+     *     greenLightTime = glt;
+     *     yellowLightTime = ylt;
+     *     flashing = fla;
+     * }
+     * public int check(){
+     *     return (int)redLightTime;
+     * }
+     */
 }
 /*假設G8 Y2 R10
  * 此G8 對R8
