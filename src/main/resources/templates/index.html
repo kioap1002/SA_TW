@@ -9,6 +9,83 @@
     <script src="../static/js/bootstrap.bundle.min.js"></script> 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css"> 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0px;
+            cursor: url('bird.png'), auto;
+            background-color: rgb(217, 170, 120);
+        }
+        .acg {
+            text-align: center;
+            font-weight: bolder;
+            font-size: 60px;
+            text-decoration: none;
+        }
+        .introduction_his {
+            padding: 10%;
+            background-color: rgb(255, 255, 255);
+            margin: 18% auto 6%;
+        }
+        .pa1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .boxes {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 90%;
+            margin: auto;
+        }
+        .box {
+            width: 250px;
+            display: flex;
+            color: white;
+            align-items: center;
+            justify-content: center;
+            background-color: #F2D0A9;
+            height: 500px;
+            margin: 7% 2%;
+            float: left;
+            transform-origin: 0,0;
+        }
+        .box:hover {
+            transform: scale(1.08,1.08);
+            color: rgb(255, 255, 255);
+            transition: .5s ease;
+            background-color: #F6C8C8;
+        }
+        .box_c:hover {
+        
+        background-color: #FED1BB;
+        }
+        .box_g:hover {
+        background-color: #BFDDE7;
+        }
+        .box_n:hover {
+        background-color: #DAD0F0;
+        }
+        .box_p:hover {
+        background-color: #B6D9C3;
+        }
+        .ft {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #F2D0A9;
+            height: 200px;
+            width: auto;
+            margin-top: 5%;
+        }
+        /************lokiFooter**********/
+        footer>.position-fixed {
+        right: 5vh;
+        bottom: 5vh;
+        z-index: 999;
+        }
+    </style>
 </head>
 
 <body>
