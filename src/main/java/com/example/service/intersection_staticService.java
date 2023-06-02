@@ -3,16 +3,16 @@ package com.example.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.model.intersection_static;
-import com.example.repository.intersection_staticRepository;
+import com.example.model.Intersection_static;
+import com.example.repository.Intersection_staticRepository;
 
 @Service
-public class intersection_staticService {
+public class Intersection_staticService {
 	@Autowired
-	intersection_staticRepository intersection_staticRepository;
+	Intersection_staticRepository intersection_staticRepository;
 	
-	public void addIntersection_static(intersection_static intersection_static){
-		intersection_staticRepository.addIntersection_static(intersection_static);
+	public void addIntersection_static(Intersection_static Intersection_static){
+		intersection_staticRepository.addIntersection_static(Intersection_static);
 	}
 	
 	//get TotalSeconds by intersection_id : integer

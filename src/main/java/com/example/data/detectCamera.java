@@ -29,8 +29,8 @@ public class detectCamera {
     }
     // 處理路口照片 並將資料更新???
     public void detectIntersections(String imageMassage){
-        boolean EV;
-        double VA;
+        boolean EV = true;  //紅字很煩，隨便給
+        double VA = 0.0;  //紅字很煩，隨便給
         // System.out.println(imageMassage);//處理照片資訊，因為麻煩先這樣表示
         //IMlist[1]=[false, 30]; // EV, VA 處理照片資訊完得到的資料，因為麻煩先這樣表示
         //updateCondition(IMlist[0],IMlist[1]);

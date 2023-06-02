@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.example.model.intersection_static;
+import com.example.model.Intersection_static;
 
 @Repository
-public class intersection_staticRepository {
+public class Intersection_staticRepository {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-	public void addIntersection_static(intersection_static intersection_static){
+	public void addIntersection_static(Intersection_static intersection_static){
 		System.out.println("EXCUTE INSERT INTERSECTION_STATIC");
 		jdbcTemplate.update("INSERT INTO intersection_static(ROAD_INTERSECTION_ID, INTERSECTION_NAME, TOTALSECONDS, SPEEDLIMIT_EW, LANEWIDTH_EW, ROADRIGHT_EW, GREENLIGHTTIME_EW, SPEEDLIMIT_NS, LANEWIDTH_NS, ROADRIGHT_NS, GREENLIGHTTIME_NS, CREATE_DATE) "
 	  		+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW())",intersection_static.getRoad_Intersection_ID(), intersection_static.getIntersection_Name(), intersection_static.getTotalSeconds(), intersection_static.getSpeedLimit_ew()

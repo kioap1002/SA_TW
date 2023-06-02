@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Component
-public class intersection_static {
+public class Intersection_static {
     private String Road_Intersection_ID;
     private String Intersection_Name;
     private Integer TotalSeconds;

@@ -25,19 +25,19 @@ public class roadSituation_sum {
           return 0;
       }
   }
-  
-  public int densityMode_col(double Last30DaysDensity_EW, double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
+//  public int densityMode_col(double Last30DaysDensity_EW, double Last30DaysDensity_NS){  //密度模板 0: 低 1:正常 2:高
+  public int densityMode_col(double Last30DaysDensity){  //密度模板 0: 低 1:正常 2:高
       int EW=0,NS=0;
-      if(east_westDensity > Last30DaysDensity_EW * 1.5) {
+      if(east_westDensity > Last30DaysDensity * 1.5) {
           EW = 2;  //高密度
-      } else if (east_westDensity < Last30DaysDensity_EW * 0.5){
+      } else if (east_westDensity < Last30DaysDensity * 0.5){
           EW = 0;  //低密度
       } else {
           EW = 1;  //普通密度
       }
-      if(north_southDensity > Last30DaysDensity_NS * 1.5) {
+      if(north_southDensity > Last30DaysDensity * 1.5) {
           NS = 2;
-      } else if (north_southDensity < Last30DaysDensity_NS * 0.5){
+      } else if (north_southDensity < Last30DaysDensity * 0.5){
           NS = 0;
       } else {
           NS = 1;

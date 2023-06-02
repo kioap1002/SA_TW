@@ -29,5 +29,10 @@ public class TrafficFlow_ns_sService {
 	public boolean getEV() {
 	    return trafficFlow_ns_sRepository.getEV();
 	}
+	
+	//get getDensity_avg : double
+	public double getDensity_avg() {
+	    return trafficFlow_ns_sRepository.getDensity_avg();
+	}
 
 }

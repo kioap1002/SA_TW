@@ -36,4 +36,11 @@ public class TrafficFlow_ew_sRepository {
 	    String sql = "SELECT Emergency_Vehicle FROM TrafficFlow_ew_s ORDER BY create_date DESC limit 1";
 	    return jdbcTemplate.queryForObject(sql, Boolean.class);
 	}
+	
+	//get getDensity_avg : double
+	public double getDensity_avg() {
+	    String sql = "SELECT AVG(Density) FROM (SELECT Density FROM TrafficFlow_ew_s) AS subquery";
+	    return jdbcTemplate.queryForObject(sql, Double.class);
+	}
+	
 }

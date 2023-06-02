@@ -14,7 +14,7 @@ public class TrafficFlow_dService {
 	public void addTrafficFlow_d(Trafficflow_d trafficFlow_d){
 		trafficFlow_dRepository.addTrafficFlow_d(trafficFlow_d);
 	}
-	//get the 30 days Density's average : boolean
+	//get the 30 days Density's average : double
 	public double getDensity() {
 	    return trafficFlow_dRepository.getDensity();
 	}
