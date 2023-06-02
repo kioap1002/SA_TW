@@ -2,7 +2,6 @@ import cv2
 import time
 class CCTV:
     def __init__(self):
-        
         self.video_capture = cv2.VideoCapture(0) # 打开影片流 # 0代表默认摄像头
         self.start_time = time.time() # 设置计时器
     # 處理照片的部分，使用AI偵測，未完成
