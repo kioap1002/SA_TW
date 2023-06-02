@@ -1,14 +1,19 @@
 package com.example.data;
+
 public abstract class Mode {
-    private int[] lightTime = { 0, 0, 0, 0, 0, 0 }; //lod2
-	// 傳給cp已經算完的秒數
+    protected int[] lightTime = new int[5]; // LoD2
+    // 傳給cp已經算完的秒數
+
     public abstract changedParameter changeMode();
 }
+
 class emergencyMode extends Mode {
     private int EV;
+
     emergencyMode(int EV) {
         this.EV = EV;
     }
+
     public changedParameter changeMode() {
         return new changedParameter(EV, 0);
     }
@@ -18,6 +23,7 @@ class HighDensityMode extends Mode {
     private int D;
     private double density_EW;
     private double density_NS;
+
     HighDensityMode(int D, double EW_d, double NS_d, int[] lT) {
         this.D = D;
         this.density_EW = EW_d;
@@ -53,6 +59,7 @@ class BasicDensityMode extends Mode {
     BasicDensityMode(int[] lT /* 從資料庫取得的預設秒數 */) {
         this.lightTime = lT;
     }
+
     public changedParameter changeMode() {
         return new changedParameter(lightTime);
     }
@@ -76,6 +83,7 @@ class LowDensityMode extends Mode {
 class manualMode extends Mode {
     private int direction = 0;
     private int flashing = 0;
+
     manualMode(int dire) {
         direction = dire;
     }
