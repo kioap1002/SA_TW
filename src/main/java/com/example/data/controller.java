@@ -93,10 +93,10 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
             tomarrow = (int) System.currentTimeMillis() / (1000 * 60 * 60 * 24);
             if (tomarrow - today == 1) {
                 // 換日，處理今日資料
-//                private Long ID;
-//                private String Road_Intersection_ID;
-//                private LocalDate Date;
-//                private Double Density_avg;
+                // private Long ID;
+                // private String Road_Intersection_ID;
+                // private LocalDate Date;
+                // private Double Density_avg;
             	//增加資料
             	trafficFlow_d = new Trafficflow_d();
             	trafficFlow_d.setRoad_Intersection_ID(null);
@@ -107,8 +107,8 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
             	
             	
             	Last30DaysDensity = dbmanager.getDensity();
-//                Last30DaysDensity_EW = iDb_d.calculateTheLast30DaysDensityAverage(false);
-//                Last30DaysDensity_NS = iDb_d.calculateTheLast30DaysDensityAverage(true);
+                // Last30DaysDensity_EW = iDb_d.calculateTheLast30DaysDensityAverage(false);
+                // Last30DaysDensity_NS = iDb_d.calculateTheLast30DaysDensityAverage(true);
                 
                 
                 day = LocalDate.now();
@@ -130,7 +130,6 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
             // 每5秒拍攝一次
             if (time + 5 <= timeNow) {
                 automaticShooting();
-                
             }
             modeTimeNow = (int) System.currentTimeMillis() / 1000;
             // 套模板的條件
