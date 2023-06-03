@@ -27,7 +27,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     private east_westDetectCamera camera_EW;
     private north_southDetectCamera camera_NS;
     // 整合路口資訊
-    private roadSituation_sum road_sum;
+    private roadSituation road_sum;
     // 提供給pTS的資料
     private changedParameter cP;
 
@@ -152,8 +152,8 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
         time = (int) System.currentTimeMillis() / 1000;
         timeNow = (int) System.currentTimeMillis() / 1000;
         // 下面3個可能會放到其他地方
-        road_sum = new roadSituation_sum(camera_EW.RS.emergencyVehicle, camera_NS.RS.emergencyVehicle,
-                camera_EW.RS.density, camera_NS.RS.density);
+        road_sum = new roadSituation(camera_EW.EV, camera_NS.EV,
+                camera_EW.density, camera_NS.density);
 
     }
 
@@ -170,7 +170,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
                 case 1:
                 case 2:
                     mode = new HighDensityMode(road_sum.densityMode_col(Last30DaysDensity),
-                            camera_EW.RS.density, camera_NS.RS.density, lightTime);
+                            camera_EW.density, camera_NS.density, lightTime);
                     break;
                 case 3:
                     mode = new BasicDensityMode(lightTime);
