@@ -3,6 +3,7 @@ import time
 import pymysql
 import numpy as np
 class CCTV:
+    
     def __init__(self):
         self.video_capture = cv2.VideoCapture(0) # 打開影片流 # 0代表預設攝像頭
     def capture_image(self):
@@ -10,14 +11,15 @@ class CCTV:
         return frame # 返回捕獲的圖像
 class Database:
     def __init__(self): # 連接到資料庫
-        self.connection = pymysql.connect(host='localhost', user='username', password='password', db='database')
+        self.connection = pymysql.connect(host='localhost', user='root', password='dbpw', db='new_schema')
     def insert_image(self, image, vehicle_count, emergency_count):
         # 將影像轉換為位元組資料
         _, img_bytes = cv2.imencode('.jpg', image)
         img_data = img_bytes.tobytes()
         # 插入圖像數據到資料庫
         cursor = self.connection.cursor()
-        cursor.execute("INSERT INTO (image_data, vehicle_count, emergency_count) VALUES (%s, %s, %s)", (img_data, vehicle_count, emergency_count))
+        cursor.execute("INSERT INTO images (image_data, vehicle_count, emergency_count) VALUES (%s, %s, %s)", (img_data, vehicle_count, emergency_count))
+        
         self.connection.commit()
         cursor.close()
 class YOLODetector:
@@ -54,7 +56,7 @@ class YOLODetector:
                     boxes.append([x, y, width, height])
                     confidences.append(float(confidence))
                     class_ids.append(class_id)
-        indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4) # 進行非最大值抑制
+        indexes = cv2.dnn.NMSBoxes(np.array(boxes), np.array(confidences), 0.5, 0.4) # 進行非最大值抑制
         # 返回偵測結果
         objects = []
         for i in range(len(boxes)):
@@ -84,7 +86,7 @@ if __name__ == "__main__":
                     emergency_count = True
             db.insert_image(image, vehicle_count, emergency_count) # 將影像儲存到資料庫中
             start_time = current_time # 更新計時器
-        # 按下 'q' 鍵退出迴圈
+        # 每小時重製一次
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     db.connection.close()
