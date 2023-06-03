@@ -20,10 +20,10 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
+		<!--dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+		</dependency-->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -73,7 +73,53 @@
 	        <version>1.18.28</version>
 	        <scope>provided</scope>
 	    </dependency>
-	</dependencies>
+	    
+    	<dependency>
+        	<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+    	</dependency>
+    	    <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+			
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!--dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+			
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>sockjs-client</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+			
+		<dependency>
+		<groupId>org.webjars</groupId>
+		<artifactId>stomp-websocket</artifactId>
+		<version>2.3.3</version>
+		</dependency>
+			
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+			
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>3.6.4</version>
+		</dependency-->
+		
+		</dependencies>
 		
 		
 

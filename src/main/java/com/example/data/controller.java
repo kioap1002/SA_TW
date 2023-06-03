@@ -30,8 +30,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     private roadSituation_sum road_sum;
     // 提供給pTS的資料
     private changedParameter cP;
-    // 實體紅綠燈
-    private physicalTrafficSignal pTS = new physicalTrafficSignal();// 用來傳我們要更改的Mode進去 //parameter
+
     // 取得路口資訊的部份，未完善好，路口資訊需要得到的部分，路權、預設秒數
     // DB相關
     DBManager dbmanager;
@@ -48,8 +47,12 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     private Scanner userInput = new Scanner(System.in);
     private int[] right = { 0, 0 };// 路權 int[1]， [0]: right_EW, [1]: right_NS
 
+    // 實體紅綠燈
+    private physicalTrafficSignal pTS;// 用來傳我們要更改的Mode進去 //parameter
+
     controller() {
         // 先套預設模板
+        pTS = new physicalTrafficSignal();
         pTS.setcP(mode_B.changeMode());
         pTS.changeTrafficLight();
 
