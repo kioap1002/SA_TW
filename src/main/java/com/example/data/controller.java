@@ -27,17 +27,17 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     private east_westDetectCamera camera_EW;
     private north_southDetectCamera camera_NS;
     // 整合路口資訊
-    private roadSituation road_sum;
+    private roadSituation_sum road_sum;
     // 提供給pTS的資料
     private changedParameter cP;
 
     // 取得路口資訊的部份，未完善好，路口資訊需要得到的部分，路權、預設秒數
     // DB相關
-    DBManager dbmanager;
-    Intersection_static intersection_static;
-    Trafficflow_d trafficFlow_d;
-    TrafficFlow_ew_s trafficFlow_ew_s;
-    TrafficFlow_ns_s trafficFlow_ns_s;
+    protected DBManager dbmanager;
+    protected Intersection_static intersection_static;
+    protected Trafficflow_d trafficFlow_d;
+    protected TrafficFlow_ew_s trafficFlow_ew_s;
+    protected TrafficFlow_ns_s trafficFlow_ns_s;
     private String rid = "R01";
 
     // 預設秒數 int[5]， [0]: glt_EW, [1]: ylt_EW, [2]:arlt_EW, [3]: glt_NS, [4]:ylt_NS,
@@ -51,11 +51,6 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     private physicalTrafficSignal pTS;// 用來傳我們要更改的Mode進去 //parameter
 
     controller() {
-        // 先套預設模板
-        pTS = new physicalTrafficSignal();
-        pTS.setcP(mode_B.changeMode());
-        pTS.changeTrafficLight();
-
         // get road right
         right[0] = dbmanager.getRroadRightByRoadIntersectionId(rid, "ew") ? 1 : 0;
         right[1] = dbmanager.getRroadRightByRoadIntersectionId(rid, "ns") ? 1 : 0;
@@ -85,12 +80,10 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     public void autoMode() {
         try {
             tomarrow = (int) System.currentTimeMillis() / (1000 * 60 * 60 * 24);
-            if (tomarrow - today == 1) {
-                // 換日，處理今日資料
-
-                // 新增資料
+            if (tomarrow - today == 1) { // date changed
+                // update data
                 trafficFlow_d = new Trafficflow_d();
-                trafficFlow_d.setRoad_Intersection_ID(null);
+                trafficFlow_d.setRoad_Intersection_ID(rid);
                 trafficFlow_d.setDate(day);
                 double d = (dbmanager.getDensity_avg_ew() + dbmanager.getDensity_avg_ns()) / 2;
                 trafficFlow_d.setDensity_avg(d);
@@ -98,15 +91,13 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
 
                 Last30DaysDensity = dbmanager.getDensity();
 
-                day = LocalDate.now();
-
-                // 清空秒資料庫，重製時間
                 dbmanager.deleteData_ns();
                 dbmanager.deleteData_ew();
-
+                day = LocalDate.now();
                 today = (int) System.currentTimeMillis() / (1000 * 60 * 60 * 24);
                 tomarrow = (int) System.currentTimeMillis() / (1000 * 60 * 60 * 24);
             }
+
             timeNow = (int) System.currentTimeMillis() / 1000;
             // 每5秒拍攝一次
             if (time + 5 <= timeNow) {
