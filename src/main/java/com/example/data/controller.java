@@ -140,7 +140,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
         // 更新秒資料庫
         LocalTime time_n = LocalTime.now();
         TrafficFlow_ew_s trafficFlow_ew_s = new TrafficFlow_ew_s();
-        trafficFlow_ew_s.setRoad_Intersection_ID(rid);
+        trafficFlow_ew_s.setRoad_Intersection_ID(camera_EW.roadID);
         trafficFlow_ew_s.setTime(time_n);
         trafficFlow_ew_s.setEmergency_Vehicle(camera_EW.emergency);
         trafficFlow_ew_s.setDensity(camera_EW.density);
@@ -148,7 +148,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
         dbmanager.addTrafficFlow_ew_s(trafficFlow_ew_s);
 
         TrafficFlow_ns_s trafficFlow_ns_s = new TrafficFlow_ns_s();
-        trafficFlow_ns_s.setRoad_Intersection_ID(rid);
+        trafficFlow_ns_s.setRoad_Intersection_ID(camera_EW.roadID);
         trafficFlow_ns_s.setTime(time_n);
         trafficFlow_ns_s.setEmergency_Vehicle(camera_EW.emergency);
         trafficFlow_ns_s.setDensity(camera_EW.density);
@@ -157,7 +157,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
 
         time = (int) System.currentTimeMillis() / 1000;
         timeNow = (int) System.currentTimeMillis() / 1000;
-        // 下面3個可能會放到其他地方
+        // 下面3個可能會放到其他地方s
         road_sum = new roadSituation(camera_EW.emergency, camera_NS.emergency, camera_EW.density, camera_NS.density);
 
     }
