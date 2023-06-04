@@ -13,7 +13,7 @@ import org.python.util.PythonInterpreter;
 
 // 偵測相機 一個紅綠燈一個相機
 public class detectCamera {
-    private String roadID;
+    protected String roadID;
     private int direction;
     private calculation C = new calculation();
     protected boolean emergency = false;
