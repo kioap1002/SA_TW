@@ -22,7 +22,7 @@ public class detectCamera {
     detectCamera(String rid, int dire){
         roadID = rid;
         direction = dire;
-        pyCamera.execfile("src\main\py\detectCamera.py");
+        pyCamera.execfile("src\\main\\py\\detectCamera.py");
     }
     public void shootIntersections(){
         int time = (int) System.currentTimeMillis() / 1000;
@@ -36,7 +36,7 @@ public class detectCamera {
 
         PyObject image = c_I.__call__(new PyInteger(camera));
         PyObject image_date = p_I.__call__(image);
-        PyObject image_bytes = ItBs.__call__(image)
+        PyObject image_bytes = ItBs.__call__(image);
         byte[] imageBytes = image_bytes.tojava(byte[].class);
         int[] imageData = image_data.tojava(int[].class);
         photo = imageBytes;
@@ -46,14 +46,12 @@ public class detectCamera {
         }
     }
 }
-
 // 下面兩個class都是依據相機設定車道方向
 class east_westDetectCamera extends detectCamera {
     east_westDetectCamera(String rid) {
         super(rid, 0);
     }
 }
-
 class north_southDetectCamera extends detectCamera {
     north_southDetectCamera(String rid) {
         super(rid, 1);
