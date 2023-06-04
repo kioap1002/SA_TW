@@ -165,17 +165,17 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     public changedParameter judgeMode() {
         Mode mode = mode_B;
         changedParameter cP_M;
-        int EV = road_sum.haveEmergency();
-        if (EV != 0) {
+        roadSituation_result rS_R = new roadSituation_result(road_sum, Last30DaysDensity);
+
+        if (rS_R.EV_result != 0) {
             mode = new emergencyMode(EV);
         } else {
             // 0: both高 1: EW高 2:NS高, 3: NS or EW普通, 4: both低
-            switch (road_sum.densityMode_col(Last30DaysDensity)) {
+            switch (rS_R.D_result) {
                 case 0:
                 case 1:
                 case 2:
-                    mode = new HighDensityMode(road_sum.densityMode_col(Last30DaysDensity),
-                            camera_EW.density, camera_NS.density, lightTime);
+                    mode = new HighDensityMode(rS_R.D_result,camera_EW.density, camera_NS.density, lightTime);
                     break;
                 case 3:
                     mode = new BasicDensityMode(lightTime);
