@@ -3,7 +3,6 @@ package com.example.model;
 import java.sql.Blob;
 import java.time.LocalTime;
 
-
 import org.springframework.stereotype.Component;
 import lombok.Data;
 
@@ -16,6 +15,6 @@ public class TrafficFlow_ew_s {
     private LocalTime Time;
     private Boolean Emergency_Vehicle;
     private Double Density;
-    private Blob Photo;
+    private byte[] Photo;
 
 }
