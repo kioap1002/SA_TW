@@ -27,7 +27,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     private east_westDetectCamera camera_EW;
     private north_southDetectCamera camera_NS;
     // 整合路口資訊
-    private roadSituation_sum road_sum;
+    private roadSituation road_sum;
     // 提供給pTS的資料
     private changedParameter cP;
 
