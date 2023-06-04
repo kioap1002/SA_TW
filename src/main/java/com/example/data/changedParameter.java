@@ -40,9 +40,6 @@ public class changedParameter {
         allRedLightTime_NS = lightTime[5];
     }
 
-    public int[] getLightTimeOfEW() {
-        return new int[] { greenLightTime_EW, greenLightTime_EW, greenLightTime_EW };
-    }
     /*
      * 目前沒用的部份
      * public void setParameter(double rlt, double glt, double ylt, int fla){

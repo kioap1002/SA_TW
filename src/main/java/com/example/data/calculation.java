@@ -5,7 +5,7 @@ public class calculation {
     private double density;
     // private double densityDiffer;
     public double calculateVehicleDensity(double vehicleAmount){  //change the type of vA from int to double
-        this.density =  (double)vehicleAmount / laneLength;
+        this.density =  vehicleAmount / laneLength;
         return density;
     }
 }

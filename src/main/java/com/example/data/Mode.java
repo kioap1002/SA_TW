@@ -6,9 +6,6 @@ public abstract class Mode {
 
     public abstract changedParameter changeMode();
 
-    public int[] getLightTime() {
-        return this.lightTime;
-    }
 }
 
 class emergencyMode extends Mode {

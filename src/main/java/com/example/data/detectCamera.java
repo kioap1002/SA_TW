@@ -5,60 +5,56 @@ import java.sql.Time;
 import java.time.*;
 import java.util.Date;
 
+import org.python.core.PyFunction;
+import org.python.core.PyInteger;
+import org.python.core.PyObject;
+import org.python.util.PythonInterpreter;
+
 // 偵測相機 一個紅綠燈一個相機
 public class detectCamera {
-    private Date date;// = now();
-    protected Time time;
-    private boolean laneDirection; // false:南北, true:東西 //不是拍照能得到的訊息
-    protected boolean EV = false;
-    protected double density;
-    // private boolean emergencyVehicle = false; //好像可以用RS_E取代
-    private calculation C = new calculation();
-    protected roadSituation RS; // private
-
-    detectCamera(boolean LD) {
-        date = new Date(); // time = LocalTime.now();
-        laneDirection = LD;
+    private String roadID;
+    private int direction;
+    private boolean emergency = false;
+    private double density;
+    private byte[] photo;
+    private PythonInterpreter pyCamera = new PythonInterpreter();
+    detectCamera(String rid, int dire){
+        roadID = rid;
+        direction = dire;
+        pyCamera.execfile("src\main\py\detectCamera.py");
     }
+    public void shootIntersections(){
+        int time = (int) System.currentTimeMillis() / 1000;
+        int timeNow = (int) System.currentTimeMillis() / 1000;
+        
+        PyFunction c_V = pyCamera.get("create_video_capture", PyFunction.class);
+        PyObject camera = c_V.__call__(new PyInteger(direction));
+        PyFunction c_I = pyCamera.get("capture_image", PyFunction.class);
+        PyFunction p_I = pyCamera.get("process_cctv_image", PyFunction.class);
+        PyFunction ItBs = pyCamera.get("convert_image_to_bytes", PyFunction.class);
 
-    // 拍攝路口 將拍攝後的照片交給其他函式(?)處理
-    public File shootIntersections() {
-        System.out.println("Shooting...");
-        detectIntersections("emergencyVehicle = false;vehicleAmount=30;");// 因為拍照和處理照片很麻煩，先寫這樣
-        // return image ??????
-        // updateCondition(laneDirection, emergencyVehicle, vehicleAmount);
-        String img_path = "path/img.jpg";
-        File file = new File(img_path);
-        return file;
+        PyObject image = c_I.__call__(new PyInteger(camera));
+        PyObject image_date = p_I.__call__(image);
+        PyObject image_bytes = ItBs.__call__(image)
+        byte[] imageBytes = image_bytes.tojava(byte[].class);
+        int[] imageData = image_data.tojava(int[].class);
+        photo = imageBytes;
+        density = calculation((double)imageData[0]);
+        if (imageData[1] > 0) {
+            emergency = true;
+        }
     }
-
-    // 處理路口照片 並將資料更新???
-    public void detectIntersections(String imageMassage) {
-        boolean EV = true; // 紅字很煩，隨便給
-        double VA = 0.0; // 紅字很煩，隨便給
-        // System.out.println(imageMassage);//處理照片資訊，因為麻煩先這樣表示
-        // IMlist[1]=[false, 30]; // EV, VA 處理照片資訊完得到的資料，因為麻煩先這樣表示
-        // updateCondition(IMlist[0],IMlist[1]);
-        RS = new roadSituation(time, laneDirection, VA, EV, C.calculateVehicleDensity(VA));
-    }
-    // 設定最新資料
-    // public Void updateCondition(boolean EV, int VA){ //intersectionSituation //
-    // 緊急車輛經過狀態&道路狀態
-    // emergencyVehicle = EV;
-    // RS = new roadSituation(time, laneDirection, VA, EV,
-    // C.calculateVehicleDensity(VA));
-    // }
 }
 
 // 下面兩個class都是依據相機設定車道方向
 class east_westDetectCamera extends detectCamera {
-    east_westDetectCamera() {
-        super(false);
+    east_westDetectCamera(String rid) {
+        super(rid, 0);
     }
 }
 
 class north_southDetectCamera extends detectCamera {
-    north_southDetectCamera() {
-        super(true);
+    north_southDetectCamera(String rid) {
+        super(rid, 1);
     }
 }

@@ -51,6 +51,10 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     private physicalTrafficSignal pTS;// 用來傳我們要更改的Mode進去 //parameter
 
     controller() {
+        pTS = new physicalTrafficSignal()
+        pTS.setcP(mode_B.changeMode());
+        camera_EW = new east_westDetectCamera(rid);
+        camera_NS = new north_southDetectCamera(rid);
         // get road right
         right[0] = dbmanager.getRroadRightByRoadIntersectionId(rid, "ew") ? 1 : 0;
         right[1] = dbmanager.getRroadRightByRoadIntersectionId(rid, "ns") ? 1 : 0;
@@ -143,8 +147,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
         time = (int) System.currentTimeMillis() / 1000;
         timeNow = (int) System.currentTimeMillis() / 1000;
         // 下面3個可能會放到其他地方
-        road_sum = new roadSituation(camera_EW.EV, camera_NS.EV,
-                camera_EW.density, camera_NS.density);
+        road_sum = new roadSituation(camera_EW.EV, camera_NS.EV,camera_EW.density, camera_NS.density);
 
     }
 
