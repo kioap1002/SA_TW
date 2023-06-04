@@ -1,7 +1,11 @@
 package com.example.repository;
 
+import java.sql.SQLException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.stereotype.Repository;
 
 import com.example.model.TrafficFlow_ew_s;
@@ -10,37 +14,40 @@ import com.example.model.TrafficFlow_ew_s;
 public class TrafficFlow_ew_sRepository {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
-	public void addTrafficFlow_ew_s(TrafficFlow_ew_s trafficFlow_ew_s){
+
+	public void addTrafficFlow_ew_s(TrafficFlow_ew_s trafficFlow_ew_s) throws DataAccessException, SQLException {
 		System.out.println("EXCUTE INSERT TRAFFICFLOWEWD");
-		jdbcTemplate.update("INSERT INTO TrafficFlow_ew_s(ID, ROAD_INTERSECTION_ID, TIME, EMERGENCY_VEHICLE, DENSITY, PHOTO, CREATE_DATE) "
-	  		+ "VALUES (?,?,?,?,?,?,NOW())",trafficFlow_ew_s.getID(), trafficFlow_ew_s.getRoad_Intersection_ID(),
-	  		trafficFlow_ew_s.getTime(),trafficFlow_ew_s.getEmergency_Vehicle(),trafficFlow_ew_s.getDensity(),trafficFlow_ew_s.getPhoto());
+		jdbcTemplate.update(
+				"INSERT INTO TrafficFlow_ew_s(ID, ROAD_INTERSECTION_ID, TIME, EMERGENCY_VEHICLE, DENSITY, PHOTO, CREATE_DATE) "
+						+ "VALUES (?,?,?,?,?,?,NOW())",
+				trafficFlow_ew_s.getID(), trafficFlow_ew_s.getRoad_Intersection_ID(),
+				trafficFlow_ew_s.getTime(), trafficFlow_ew_s.getEmergency_Vehicle(), trafficFlow_ew_s.getDensity(),
+				new SqlLobValue(trafficFlow_ew_s.getPhoto().getBinaryStream(),
+						(int) trafficFlow_ew_s.getPhoto().length()));
 	}
-	
-	//delete all rows
+
+	// delete all rows
 	public void deleteData() {
-	    String sql = "DELETE FROM TrafficFlow_ew_s";
-	    jdbcTemplate.update(sql);
+		String sql = "DELETE FROM TrafficFlow_ew_s";
+		jdbcTemplate.update(sql);
 	}
-	
-	//get the newest Density info : boolean
+
+	// get the newest Density info : boolean
 	public double getDensity() {
-	    String sql = "SELECT Density FROM TrafficFlow_ew_s ORDER BY create_date DESC limit 1";
-	    return jdbcTemplate.queryForObject(sql, Double.class);
+		String sql = "SELECT Density FROM TrafficFlow_ew_s ORDER BY create_date DESC limit 1";
+		return jdbcTemplate.queryForObject(sql, Double.class);
 	}
-	
-	
-	//get the newest EV info : boolean
+
+	// get the newest EV info : boolean
 	public boolean getEV() {
-	    String sql = "SELECT Emergency_Vehicle FROM TrafficFlow_ew_s ORDER BY create_date DESC limit 1";
-	    return jdbcTemplate.queryForObject(sql, Boolean.class);
+		String sql = "SELECT Emergency_Vehicle FROM TrafficFlow_ew_s ORDER BY create_date DESC limit 1";
+		return jdbcTemplate.queryForObject(sql, Boolean.class);
 	}
-	
-	//get getDensity_avg : double
+
+	// get getDensity_avg : double
 	public double getDensity_avg() {
-	    String sql = "SELECT AVG(Density) FROM (SELECT Density FROM TrafficFlow_ew_s) AS subquery";
-	    return jdbcTemplate.queryForObject(sql, Double.class);
+		String sql = "SELECT AVG(Density) FROM (SELECT Density FROM TrafficFlow_ew_s) AS subquery";
+		return jdbcTemplate.queryForObject(sql, Double.class);
 	}
-	
+
 }
