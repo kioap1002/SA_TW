@@ -40,8 +40,8 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     protected TrafficFlow_ns_s trafficFlow_ns_s;
     private String rid = "R01";
 
-    // 預設秒數 int[5]， [0]: glt_EW, [1]: ylt_EW, [2]:arlt_EW, [3]: glt_NS, [4]:ylt_NS,
-    // [5]:arlt_NS
+    // 預設秒數 int[5]
+    // [0]: glt_EW, [1]: ylt_EW, [2]:arlt_EW, [3]: glt_NS, [4]:ylt_NS, [5]:arlt_NS
     private int[] lightTime = { 0, 0, 0, 0, 0, 0 };
     private Mode mode_B = new BasicDensityMode(lightTime);
     private Scanner userInput = new Scanner(System.in);
