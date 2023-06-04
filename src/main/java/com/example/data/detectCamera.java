@@ -28,9 +28,6 @@ public class detectCamera {
     }
 
     public void shootIntersections() {
-        int time = (int) System.currentTimeMillis() / 1000;
-        int timeNow = (int) System.currentTimeMillis() / 1000;
-
         PyFunction c_V = pyCamera.get("create_video_capture", PyFunction.class);
         PyObject camera = c_V.__call__(new PyInteger(direction));
         PyFunction c_I = pyCamera.get("capture_image", PyFunction.class);
