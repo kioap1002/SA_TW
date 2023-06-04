@@ -14,6 +14,7 @@ import org.python.util.PythonInterpreter;
 public class detectCamera {
     private String roadID;
     private int direction;
+    private calculation C = new calculation();
     private boolean emergency = false;
     private double density;
     private byte[] photo;
@@ -39,7 +40,7 @@ public class detectCamera {
         byte[] imageBytes = image_bytes.tojava(byte[].class);
         int[] imageData = image_data.tojava(int[].class);
         photo = imageBytes;
-        density = calculation((double)imageData[0]);
+        density = C.calculateVehicleDensity((double)imageData[0]);
         if (imageData[1] > 0) {
             emergency = true;
         }
