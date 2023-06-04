@@ -15,15 +15,17 @@ public class detectCamera {
     private String roadID;
     private int direction;
     private calculation C = new calculation();
-    private boolean emergency = false;
-    private double density;
+    protected boolean emergency = false;
+    protected double density;
     private byte[] photo;
     private PythonInterpreter pyCamera = new PythonInterpreter();
+
     detectCamera(String rid, int dire){
         roadID = rid;
         direction = dire;
         pyCamera.execfile("src\\main\\py\\detectCamera.py");
     }
+
     public void shootIntersections(){
         int time = (int) System.currentTimeMillis() / 1000;
         int timeNow = (int) System.currentTimeMillis() / 1000;

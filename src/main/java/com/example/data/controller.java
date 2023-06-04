@@ -51,7 +51,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
     private physicalTrafficSignal pTS;// 用來傳我們要更改的Mode進去 //parameter
 
     controller() {
-        pTS = new physicalTrafficSignal()
+        pTS = new physicalTrafficSignal();
         pTS.setcP(mode_B.changeMode());
         camera_EW = new east_westDetectCamera(rid);
         camera_NS = new north_southDetectCamera(rid);
@@ -61,11 +61,11 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
 
         // get lightTime
         lightTime[0] = dbmanager.getGreenLightTime(rid, "ew");
-        lightTime[1] = 0;// 自己算 y
-        lightTime[2] = 0;// 自己算 ar
+        lightTime[1] = dbmanager.getYellowLightTime(dbmanager.getSpeedLimit(rid, "ew"));
+        lightTime[2] = dbmanager.getArTime(rid, "ew");
         lightTime[3] = dbmanager.getGreenLightTime(rid, "ns");
-        lightTime[4] = 0;// 自己算 y
-        lightTime[5] = 0;// 自己算 ar
+        lightTime[4] = dbmanager.getYellowLightTime(dbmanager.getSpeedLimit(rid, "ns"));
+        lightTime[5] = dbmanager.getArTime(rid, "ns");
 
         String action = "AUTO";
         while (true) {
@@ -147,7 +147,7 @@ public class controller { // 有手動跟自動的模式，loop控制更新資�
         time = (int) System.currentTimeMillis() / 1000;
         timeNow = (int) System.currentTimeMillis() / 1000;
         // 下面3個可能會放到其他地方
-        road_sum = new roadSituation(camera_EW.EV, camera_NS.EV,camera_EW.density, camera_NS.density);
+        road_sum = new roadSituation(camera_EW.emergency, camera_NS.emergency, camera_EW.density, camera_NS.density);
 
     }
 

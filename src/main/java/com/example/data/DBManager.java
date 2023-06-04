@@ -14,68 +14,106 @@ import com.example.service.TrafficFlow_ns_sService;
 public class DBManager {
 	@Autowired
 	// static data
-	Intersection_staticService intersection_staticService;  
-	public void addIntersection_static(Intersection_static intersection_static){
+	Intersection_staticService intersection_staticService;
+
+	public void addIntersection_static(Intersection_static intersection_static) {
 		intersection_staticService.addIntersection_static(intersection_static);
 	}
+
 	public int getTotalSecondsByRoadIntersectionId(String R_I_Id) {
-	    return intersection_staticService.getTotalSecondsByRoadIntersectionId(R_I_Id);
+		return intersection_staticService.getTotalSecondsByRoadIntersectionId(R_I_Id);
 	}
-	public int getLaneWidthByRoadIntersectionId(String R_I_Id,String direc) {
-	    return intersection_staticService.getLaneWidthByRoadIntersectionId(R_I_Id, direc);
+
+	public int getLaneWidthByRoadIntersectionId(String R_I_Id, String direc) {
+		return intersection_staticService.getLaneWidthByRoadIntersectionId(R_I_Id, direc);
 	}
-	public int getSpeedLimit(String R_I_Id,String direc) {
-	    return intersection_staticService.getSpeedLimit(R_I_Id, direc);
+
+	public int getSpeedLimit(String R_I_Id, String direc) {
+		return intersection_staticService.getSpeedLimit(R_I_Id, direc);
 	}
-	public boolean getRroadRightByRoadIntersectionId(String R_I_Id,String direc) {
+
+	public boolean getRroadRightByRoadIntersectionId(String R_I_Id, String direc) {
 		return intersection_staticService.getRroadRightByRoadIntersectionId(R_I_Id, direc);
 	}
-	public int getGreenLightTime(String R_I_Id,String direc) {
+
+	public int getGreenLightTime(String R_I_Id, String direc) {
 		return intersection_staticService.getGreenLightTime(R_I_Id, direc);
 	}
-	
+
 	// traffic_d data
 	TrafficFlow_dService trafficFlow_dService;
-	public void addTrafficFlow_d(Trafficflow_d trafficFlow_d){
+
+	public void addTrafficFlow_d(Trafficflow_d trafficFlow_d) {
 		trafficFlow_dService.addTrafficFlow_d(trafficFlow_d);
 	}
-	public double getDensity() {  //get the 30 days Density's average : double
-	    return trafficFlow_dService.getDensity();
+
+	public double getDensity() { // get the 30 days Density's average : double
+		return trafficFlow_dService.getDensity();
 	}
-	
+
 	// traffic_ew_ data
 	TrafficFlow_ew_sService trafficFlow_ew_sService;
-	public void addTrafficFlow_ew_s(TrafficFlow_ew_s trafficFlow_ew_s){
+
+	public void addTrafficFlow_ew_s(TrafficFlow_ew_s trafficFlow_ew_s) {
 		trafficFlow_ew_sService.addTrafficFlow_ew_s(trafficFlow_ew_s);
 	}
+
 	public void deleteData_ew() {
 		trafficFlow_ew_sService.deleteData();
 	}
+
 	public double getDensity_ew() {
-	    return trafficFlow_ew_sService.getDensity();
+		return trafficFlow_ew_sService.getDensity();
 	}
+
 	public boolean getEV_ew() {
-	    return trafficFlow_ew_sService.getEV();
+		return trafficFlow_ew_sService.getEV();
 	}
+
 	public double getDensity_avg_ew() {
-	    return trafficFlow_ew_sService.getDensity_avg();
+		return trafficFlow_ew_sService.getDensity_avg();
 	}
-	
+
 	// traffic_ns_ data
 	TrafficFlow_ns_sService trafficFlow_ns_sService;
-	public void addTrafficFlow_ns_s(TrafficFlow_ns_s trafficFlow_ns_s){
+
+	public void addTrafficFlow_ns_s(TrafficFlow_ns_s trafficFlow_ns_s) {
 		trafficFlow_ns_sService.addTrafficFlow_ns_s(trafficFlow_ns_s);
 	}
+
 	public void deleteData_ns() {
 		trafficFlow_ns_sService.deleteData();
 	}
+
 	public double getDensity_ns() {
-	    return trafficFlow_ns_sService.getDensity();
+		return trafficFlow_ns_sService.getDensity();
 	}
+
 	public boolean getEV_ns() {
-	    return trafficFlow_ns_sService.getEV();
+		return trafficFlow_ns_sService.getEV();
 	}
+
 	public double getDensity_avg_ns() {
-	    return trafficFlow_ns_sService.getDensity_avg();
+		return trafficFlow_ns_sService.getDensity_avg();
+	}
+
+	public int getYellowLightTime(int speed) {
+		if (speed <= 50) {
+			return 3;
+		} else if (speed > 60) {
+			return 5;
+		} else {
+			return 4;
+		}
+	}
+
+	public int getArTime(String rid, String direc) {
+		int speed = getSpeedLimit(rid, direc);
+		double ar = (getLaneWidthByRoadIntersectionId(rid, direc) + 6) / ((double) speed / 3.6);
+		if (ar < 1) {
+			return 1;
+		} else {
+			return (int) ar;
+		}
 	}
 }
