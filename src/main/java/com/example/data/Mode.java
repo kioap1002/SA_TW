@@ -3,7 +3,6 @@ package com.example.data;
 public abstract class Mode {
     protected int[] lightTime = new int[5]; // LoD2
     // 傳給cp已經算完的秒數
-
     public abstract changedParameter changeMode();
 }
 
