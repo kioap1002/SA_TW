@@ -10,6 +10,9 @@ public class changedParameter {
     protected int condition = 0; // 在自動是緊急方向，手動是哪邊要維持綠燈
     protected int flashing = 0;
 
+    public changedParameter() {
+    }
+
     changedParameter(int cd, int right) {
         condition = cd;// 0: 正常, 1: EW, 2: NS, 3: both
         flashing = right;// 0: 正常, 1: EW, 2: NS
