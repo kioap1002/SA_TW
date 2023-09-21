@@ -1,15 +1,21 @@
 package hw2;
 
+import java.util.ArrayList;
+
 public class StateDiagram {
     LayoutAlgorithm layoutAlgorithm;
+    ArrayList<LayoutAlgorithm> layouts = new ArrayList<LayoutAlgorithm>();
 
     public void draw(Graphics g) {
-        System.out.println("Drawing State Diagram");
-        layoutAlgorithm.layout();
+        System.out.println("Drawing State Diagram Graphics");
+        for (LayoutAlgorithm l : layouts) {
+            l.layout();
+        }
     }
 
     public void setLayoutAlgo(LayoutAlgorithm a) {
         layoutAlgorithm = a;
-        a.setDiagram(this);
+        layoutAlgorithm.setDiagram(this);
+        layouts.add(layoutAlgorithm);
     }
 }
