@@ -1,6 +1,7 @@
-public class OrthogonalLayout extends LayoutAlgorithm {{
+package hw2;
 
+public class OrthogonalLayout extends LayoutAlgorithm {
     public void layout() {
-        printlnln(" Orthogonal Layout");
+        System.out.println(" Orthogonal Layout");
     }
 }

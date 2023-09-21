@@ -1,5 +1,7 @@
+package hw2;
+
 public class HierarchicalLayout extends LayoutAlgorithm {
     public void layout() {
-        printlnln("Hierarchical Layout");
+        System.out.println("Hierarchical Layout");
     }
 }

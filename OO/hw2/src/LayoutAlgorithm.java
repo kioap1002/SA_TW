@@ -1,3 +1,5 @@
+package hw2;
+
 public abstract class LayoutAlgorithm {
     StateDiagram stateDiagram;
 
