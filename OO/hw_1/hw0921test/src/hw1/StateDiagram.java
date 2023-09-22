@@ -11,62 +11,86 @@ public class StateDiagram extends DiagramElement {
 
     public void add(DiagramElement e) {
     	num++;
-        /* add e to children */
-        children.add(e); // auto
+        children.add(e);
         System.out.println("adding DiagramElement...  " + num);
     }
 
     public DiagramElement get(int i) {
-        /* get from children and return result */
-        return children.get(num);
+        return children.get(i);
     }
 
     public void remove(DiagramElement e) {
-        /* remove e from children */
     	num--;
-        System.out.println("removing DiagramElement...StateDiagram");
         children.remove(e);
     }
     
-    public boolean inter = false;//預設無相交
+
     public void draw(Graphics g) {
-    	int count = 0;
-        Iterator<DiagramElement> it = children.iterator();
+    	Iterator<DiagramElement> it = children.iterator();
+        
+        DiagramElement s1 = it.next();  //head
+        DiagramElement prev = s1;  //previous
+        DiagramElement e = s1;  //now
+        
+        e.draw(g);
         while (it.hasNext()) {
-        	//inter = intersect(it.next().p);
-        	inter = false? inter = intersect(it.next().p,it.next().width,it.next().height):inter == true;
-            DiagramElement e = (DiagramElement) it.next();
-            e.draw(g);
-            count++;
+        	e.draw(g);
+            e = (DiagramElement) it.next();
+            if (!inter) {
+            	inter = intersect(prev, e);
+            }
+        	prev = e;
         }
-        System.out.println(count + "diagram.");
+        //System.out.println(count + "diagram.");
+        e.draw(g);
+        if (!inter) {
+        	inter = intersect(s1, e);
+        }
+		
+        
     }
-
-    public boolean intersect(Point p, int width, int height) {
-        /* implement StateDiagram specific behavior 
-        System.out.println(p.name + "  intersecting DiagramElement...StateDiagram");*/
-    	if(this.height == 0 && height != 0 || this.height != 0 && height==0) {
-    		//不同圖案的比較在這裡實作
-    		
-    	}else if (this.height == 0 && height == 0) {
+    public boolean intersect(DiagramElement e, DiagramElement e1) {
+    	if(e.height != 0 && e1.height != 0) {
+    		//squared    	
+        	boolean test = false;
+        	test = e.intersect(e,e1);
+    		return test;
+    	
+    	}else if (e.height == 0 && e1.height == 0) {
     		//circle
-    		return intersect(this.p, this.width, width); //need to check
+        	boolean test = false;
+        	test = e.intersect(e,e1);
+    		return test; 
     	}else {
-    		//squared
-    		
+    		//不同圖案的比較在這裡實作
+    		boolean test = false;
+    		double dx = Math.abs(e1.p.x-e.p.x);
+    		double dy = Math.abs(e1.p.y-e.p.y);
+    		double dist = 0.0;
+    		if(e.height == 0) {
+    			//e是圓形, e1矩形
+    			if(dx > e1.width/2) {
+    				//兩點x距離小於圓半徑
+    				dist = Math.sqrt(Math.pow(dx - e1.width/2,2) + Math.pow(dy, 2));
+    			}else if(dy > e1.height/2){
+    				dist = Math.sqrt(Math.pow(dy - e1.height/2,2) + Math.pow(dx, 2));
+    			}else {
+    				dist = Math.max(dx,dy);
+    			}
+    				
+    			return dist <= e.width/2  ? true: false;
+    		} else {
+    			//e1是圓形, e矩形
+    			if(dx > e.width/2) {
+    				//兩點x距離小於圓半徑
+    				dist = Math.sqrt(Math.pow(dx - e.width/2,2) + Math.pow(dy, 2));
+    			}else if(dy > e1.height/2){
+    				dist = Math.sqrt(Math.pow(dy - e.height/2,2) + Math.pow(dx, 2));
+        		}else {
+    				dist = Math.max(dx,dy);
+    			}
+    			return dist <= e1.width/2  ? true: false;
+    		}
     	}
-        return false;
     }
-
-	/*@Override
-	public boolean intersect(Point p) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean intersect(Point p, Point p1, int w1, int w2) {
-		// TODO Auto-generated method stub
-		return false;
-	}*/
 }

@@ -1,7 +1,5 @@
 package hw2;
 
-import java.util.ArrayList;
-
 public abstract class LayoutAlgorithm {
     StateDiagram stateDiagram;
 

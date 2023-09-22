@@ -5,12 +5,12 @@ import java.util.ArrayList;
 public class StateDiagram {
     LayoutAlgorithm layoutAlgorithm;
     ArrayList<LayoutAlgorithm> layouts = new ArrayList<LayoutAlgorithm>();
-
     public void draw(Graphics g) {
-        System.out.println("Drawing State Diagram Graphics");
-        for (LayoutAlgorithm l : layouts) {
-            l.layout();
+        for (LayoutAlgorithm L : layouts){
+        	System.out.println("Drawing State Diagram");
+        	L.layout();
         }
+        
     }
 
     public void setLayoutAlgo(LayoutAlgorithm a) {
