@@ -11,24 +11,18 @@ public class EditController {
 		sd.pass = s;
 		state = new State();
 		state.setContext(s);
-		sd.setState(state);
+		sd.setSDState(state);
 		System.out.println(s + "...");
 		saveMemento();
 	}
 	public void saveMemento() {
-		//System.out.println("saving...adding...");
-		m = new Memento();
-		//m.state = sd.getState();
-		m.setNowState(sd.getState());
+		m = sd.createMemento();
 		collect.add(m);
 	}
-	public void restoreMemento() {
-		//sd.state = collect.get(collect.size()-1).state;  //回到上一步
-		//sd.state = collect.get(1).state;
-		//Memento m = collect.get(collect.size()-1);
-		Memento m = collect.get(1);
-		sd.setState(m.getState());
-		System.out.println(m.getState().text);
+	public void restoreMemento(int i) {
+		Memento m = collect.get(i);
+		sd.setMemento(m);
+		System.out.println(sd.getSDState().getContext() + "[ correct]");
 	}
 	
 

@@ -1,21 +1,33 @@
 package Memento;
 
 public class StateDiagram {
-	State state = new State();
+	private State state = new State();
 	String pass = "null";
 	Memento m;
-	public void setState(State s) {
-	//public void setState(State s) {
+	public void setSDState(State s) {
 		this.state = s;//更新的
-		//state.setContext(s.text);
+		this.pass = state.getContext();
 	}
-	public State getState() {
-		return this.state;
+	
+	public State getSDState() {
+		return state;
 	}
+	
 	public Memento createMemento() {
 		m = new Memento();
-		m.setNowState(state);
-		//m.setpass();
+		State clone = state.clone();
+		m.setNowState(clone, pass);
 		return m;
+	}
+	
+	public void setMemento(Memento memento) {
+		//System.out.println(memento.state.text + " sd. set M  test");
+		try {
+			state = memento.getState(memento.state.getContext());
+			//state = memento.getState(pass);
+		} catch (Exception e) {
+		/*}catch (IllegalAccessException e) {*/
+			System.out.println(e);
+		}
 	}
 }

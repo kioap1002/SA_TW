@@ -1,11 +1,8 @@
 package Memento;
 
-import java.util.ArrayList;
-
 public class Controller {
 	public static void main(String[] args) {
 		EditController ec = new EditController();
-		//ec.sd.setState(new State());
 		ec.beautify("first");
 		System.out.println("--------------------------");
 		
@@ -15,17 +12,15 @@ public class Controller {
 		ec.beautify("third");
 		System.out.println("--------------------------");
 		
-		System.out.println("below restore testing1...");
-		ec.restoreMemento();
+		System.out.println("below restore testing1... => first");
+		ec.restoreMemento(0);
 		
 		System.out.println("--------------------------");
 		System.out.println("add forth...");
 		ec.beautify("forth");
 		
 		System.out.println("--------------------------");
-		System.out.println("below restore testing2...");
-		ec.restoreMemento();
-		//System.out.println("Adding state0...");
-
+		System.out.println("below restore testing2... => third");
+		ec.restoreMemento(2);
 	}
 }
